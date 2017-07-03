@@ -9,6 +9,7 @@ def five(board, i, j, stone):
 	else:
 		own = 2
 		other = 1
+
 	#horizental direction
 	if 4 <= j <= 14 & board[i][j-4:j+1] = [own,own,own,own,empty]:
 		return True
@@ -70,6 +71,7 @@ def liveFour(board, i, j, stone):
 	else:
 		own = 2
 		other = 1
+
 	#horizontal direction
 	if 4 <= j <= 13 & board[i][j-4:j+2] == [empty,own,own,own,empty,empty]:
 		return True
@@ -122,6 +124,7 @@ def four_horizental(board, i, j, stone):
 	else:
 		own = 2
 		other = 1
+
 	if j == 4 & (board[i][j-4:j+1] == [own,own,own,empty,empty] | board[i][j-4:j+1] == [own,own,empty,own,empty] | board[i][j-4:j+1] == [own,empty,own,own,empty]):
 		return True
 	if j == 10 & (board[i][j:j+5] == [empty,empty,own,own,own] | board[i][j:j+5] == [empty,own,empty,own,own] | board[i][j:j+5] == [empty,own,own,empty,own]):
@@ -171,6 +174,7 @@ def four_vertical(board, i, j, stone):
 	else:
 		own = 2
 		other = 1
+
 	if i == 4 & (board[i-4:i+1][j] == [own,own,own,empty,empty] | board[i-4:i+1][j] == [own,own,empty,own,empty] | board[i-4:i+1][j] == [own,empty,own,own,empty]):
 		return True
 	if i == 10 & (board[i:i+5][j] == [empty,empty,own,own,own] | board[i:i+5][j] == [empty,own,empty,own,own] | board[i:i+5][j] == [empty,own,own,empty,own]):
@@ -220,7 +224,61 @@ def four_left_oblique(board, i, j, stone):
 	else:
 		own = 2
 		other = 1
-	
+
+	if i == 4 & j == 4:
+		temp_list = [board[i-4][j-4], board[i-3][j-3], board[i-2][j-2], board[i-1][j-1], board[i][j]]
+		if temp_list == [own,own,own,empty,empty] | temp_list == [own,own,empty,own,empty] | temp_list == [own,empty,own,own,empty] | temp_list == [empty,own,own,own,empty]:
+			return True
+	if i == 10 & j == 10:
+		temp_list = [board[i][j], board[i+1][j+1], board[i+2][j+2], board[i+3][j+3], board[i+4][j+4]]
+		if temp_list == [empty,empty,own,own,own] | temp_list == [empty,own,empty,own,own] | temp_list == [empty,own,own,empty,own] | temp_list == [empty,own,own,own,empty]:
+			return True
+
+	if i == 3 & j == 3 & [board[i-3][j-3], board[i-2][j-2], board[i-1][j-1], board[i][j], board[i+1][j+1]] == [own,own,own,empty,empty]:
+		return True
+	if i == 2 & j == 2 & [board[i-2][j-2], board[i-1][j-1], board[i][j], board[i+1][j+1], board[i+1][j+1]] == [own,own,empty,own,empty]:
+		return True
+	if i == 1 & j == 1 & [board[i-1][j-1], board[i][j], board[i+1][j+1], board[i+1][j+1], board[i+2][j+2]] == [own,empty,own,own,empty]:
+		return True
+	if i == 0 & j == 0 & [board[i][j], board[i+1][j+1], board[i+1][j+1], board[i+2][j+2], board[i+3][j+3]] == [empty,own,own,own,empty]:
+		return True
+
+	if i == 11 & j == 11 & [board[i-1][j-1], board[i][j], board[i+1][j+1], board[i+2][j+2], board[i+3][j+3]] == [empty,empty,own,own,own]:
+		return True
+	if i == 12 & j == 12 & [board[i-2][j-2], board[i-1][j-1], board[i][j], board[i+1][j+1], board[i+2][j+2]] == [empty,own,empty,own,own]:
+		return True
+	if i == 13 & j == 13 & [board[i-3][j-3], board[i-2][j-2], board[i-1][j-1], board[i][j], board[i+1][j+1]] == [empty,own,own,empty,own]:
+		return True
+	if i == 14 & j == 14 & [board[i-4][j-4], board[i-3][j-3], board[i-2][j-2], board[i-1][j-1], board[i][j]] == [empty,own,own,own,empty]:
+		return True
+
+	if 4 <= i <= 13 & 4 <= j <= 13:
+		temp_list = [board[i-4][j-4], board[i-3][j-3], board[i-2][j-2], board[i-1][j-1], board[i][j], board[i+1][j+1]]
+		if temp_list == [other,own,own,own,empty,empty] | temp_list == [empty,own,own,own,empty,other]:
+			return True
+	if 3 <= i <= 12 & 3 <= j <= 12:
+		temp_list = [board[i-3][j-3], board[i-2][j-2], board[i-1][j-1], board[i][j], board[i+1][j+1], board[i+2][j+2]]
+		if temp_list == [other,own,own,empty,own,empty] | temp_list == [empty,own,own,empty,own,other]:
+			return True
+	if 2 <= i <= 11 & 2 <= j <= 11:
+		temp_list = [board[i-2][j-2], board[i-1][j-1], board[i][j], board[i+1][j+1], board[i+2][j+2], board[i+3][j+3]]
+		if temp_list == [other,own,empty,own,own,empty] | temp_list == [empty,own,empty,own,own,other]:
+			return True
+	if 1 <= i <= 10 & 1 <= j <= 10:
+		temp_list = [board[i-1][j-1], board[i][j], board[i+1][j+1], board[i+2][j+2], board[i+3][j+3], board[i+4][j+4]]
+		if temp_list == [other,empty,own,own,own,empty] | temp_list == [empty,empty,own,own,own,other]:
+			return True
+
+	if 5 <= i <= 14 & 5 <= j <= 14:
+		temp_list = [board[i-5][j-5], board[i-4][j-4], board[i-3][j-3], board[i-2][j-2], board[i-1][j-1], board[i][j]]
+		if temp_list == [other,own,own,own,empty,empty] | temp_list == [other,own,own,empty,own,empty] | temp_list == [other,own,empty,own,own,empty]:
+			return True
+	if 0 <= i <= 9 & 0 <= j <= 9:
+		temp_list = [board[i][j], board[i+1][j+1], board[i+2][j+2], board[i+3][j+3], board[i+4][j+4], board[i+5][j+5]]
+		if temp_list == [empty,empty,own,own,own,other] | temp_list == [empty,own,empty,own,own,other] | temp_list == [empty,own,own,empty,own,other]:
+			return True
+
+	return False
 
 # BAAAAB or BAAABA or BAABAA or BABAAA 
 def sealFour(board, i, j, stone):
