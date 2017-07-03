@@ -402,7 +402,6 @@ def double_four(board, i, j, stone):
 	else:
 		return False
 
-
 # BAAAAB or BAAABA or BAABAA or BABAAA 
 def sealFour(board, i, j, stone):
 	own = 0
@@ -414,84 +413,136 @@ def sealFour(board, i, j, stone):
 	else:
 		own = 2
 		other = 1
-	#left direction
-	if j >= 4 & board[i][j-4:j+1] == [other,other,other,other,empty]:
+	#horizonal direction
+	if j == 4 & board[i][j-4:j+1] == [other,other,other,other,empty]:
 		return True
-	if j >= 3 & board[i][j-3:j+2] == [other,other,other,empty,other]:
+	if j == 3 & board[i][j-3:j+2] == [other,other,other,empty,other]:
 		return True
-	if j >= 2 & board[i][j-2:j+3] == [other,other,empty,other,other]:
+	if j == 2 & board[i][j-2:j+3] == [other,other,empty,other,other]:
 		return True
-	if j >= 1 & board[i][j-1:j+4] == [other,empty,other,other,other]:
+	if j == 1 & board[i][j-1:j+4] == [other,empty,other,other,other]:
 		return True
-
-	#right direction
-	if j <= 10 & board[i][j:j+5] == [empty,other,other,other,other]:
+	if j == 10 & board[i][j:j+5] == [empty,other,other,other,other]:
 		return True
-	if j <= 11 & board[i][j-1:j+4] == [other,empty,other,other,other]:
+	if j == 11 & board[i][j-1:j+4] == [other,empty,other,other,other]:
 		return True
-	if j <= 12 & board[i][j-2:j+3] == [other,other,empty,other,other]:
+	if j == 12 & board[i][j-2:j+3] == [other,other,empty,other,other]:
 		return True
-	if j <= 13 & board[i][j-3:j+2] == [other,other,other,empty,other]:
+	if j == 13 & board[i][j-3:j+2] == [other,other,other,empty,other]:
 		return True
 
-	#upward direction
-	if i >= 4 & board[i-4:i+1][j] == [other,other,other,other,empty]:
+	if 5 <= j <= 14 & board[i][j-5:j+1] == [own,other,other,other,other,empty]:
 		return True
-	if i >= 3 & board[i-3:i+2][j] == [other,other,other,empty,other]:
+	if 4 <= j <= 13 & board[i][j-4:j+2] == [own,other,other,other,empty,other]:
 		return True
-	if i >= 2 & board[i-2:i+3][j] == [other,other,empty,other,other]:
+	if 3 <= j <= 12 & board[i][j-3:j+3] == [own,other,other,empty,other,other] | board[i][j-3:j+3] == [other,other,other,empty,other,own]:
 		return True
-	if i >= 1 & board[i-1:i+4][j] == [other,empty,other,other,other]:
+	if 2 <= j <= 11 & board[i][j-2:j+4] == [own,other,empty,other,other,other] | board[i][j-2:j+4] == [other,other,empty,other,other,own]:
 		return True
-
-	#downward direction
-	if i <= 10 & board[i:i+5][j] == [empty,other,other,other,other]:
+	if 1 <= j <= 10 & board[i][j-1:j+5] == [other,empty,other,other,other,own]:
 		return True
-	if i <= 11 & board[i-1:i+4][j] == [other,empty,other,other,other]:
-		return True
-	if i <= 12 & board[i-2:i+3][j] == [other,other,empty,other,other]:
-		return True
-	if i <= 13 & board[i-3:i+2][j] == [other,other,other,empty,other]:
+	if 0 <= j <= 9 & board[i][j:j+6] == [empty,other,other,other,other,own]:
 		return True
 
-	#left-up direction
-	if i >= 4 & j >= 4 & [board[i-4][j-4], board[i-3][j-3], board[i-2][j-2], board[i-1][j-1], board[i][j]] == [other,other,other,other,empty]:
+	#vertical direction
+	if i == 4 & board[i-4:i+1][j] == [other,other,other,other,empty]:
 		return True
-	if i >= 3 & j >= 3 & [board[i-3][j-3], board[i-2][j-2], board[i-1][j-1], board[i][j], board[i+1][j+1]] == [other,other,other,empty,other]:
+	if i == 3 & board[i-3:i+2][j] == [other,other,other,empty,other]:
 		return True
-	if i >= 2 & j >= 2 & [board[i-2][j-2], board[i-1][j-1], board[i][j], board[i+1][j+1], board[i+2][j+2]] == [other,other,empty,other,other]:
+	if i == 2 & board[i-2:i+3][j] == [other,other,empty,other,other]:
 		return True
-	if i >= 1 & j >= 1 & [board[i-1][j-1], board[i][j], board[i+1][j+1], board[i+2][j+2], board[i+3][j+3]] == [other,empty,other,other,other]:
+	if i == 1 & board[i-1:i+4][j] == [other,empty,other,other,other]:
 		return True
-
-	#right-up direction
-	if i >= 4 & j <= 10 & [board[i][j], board[i-1][j+1], board[i-2][j+2], board[i-3][j+3], board[i-4][j+4]] == [empty,other,other,other,other]:
+	if i == 10 & board[i:i+5][j] == [empty,other,other,other,other]:
 		return True
-	if i >= 3 & j <= 11 & [board[i+1][j-1], board[i][j], board[i-1][j+1], board[i-2][j+2], board[i-3][j+3]] == [other,empty,other,other,other]:
+	if i == 11 & board[i-1:i+4][j] == [other,empty,other,other,other]:
 		return True
-	if i >= 2 & j <= 12 & [board[i+2][j-2], board[i+1][j-1], board[i][j], board[i-1][j+1], board[i-2][j+2]] == [other,other,empty,other,other]:
+	if i == 12 & board[i-2:i+3][j] == [other,other,empty,other,other]:
 		return True
-	if i >= 1 & j <= 13 & [board[i+3][j-3], board[i+2][j-2], board[i+1][j-1], board[i][j], board[i-1][j+1]] == [other,other,other,empty,other]:
+	if i == 13 & board[i-3:i+2][j] == [other,other,other,empty,other]:
 		return True
 
-	#left-down direction
-	if i <= 10 & j >= 4 & [board[i][j], board[i+1][j-1], board[i+2][j-2], board[i+3][j-3], board[i+4][j-4]] == [empty,other,other,other,other]:
+	if 5 <= i <= 14 & board[i-5:i+1][j] == [own,other,other,other,other,empty]:
 		return True
-	if i <= 11 & j >= 3 & [board[i-1][j+1], board[i][j], board[i+1][j-1], board[i+2][j-2], board[i+3][j-3]] == [other,empty,other,other,other]:
+	if 4 <= i <= 13 & board[i-4:i+2][j] == [own,other,other,other,empty,other]:
 		return True
-	if i <= 12 & j >= 2 & [board[i-2][j+2], board[i-1][j+1], board[i][j], board[i+1][j-1], board[i+2][j-2]] == [other,other,empty,other,other]:
+	if 3 <= i <= 12 & board[i-3:i+3][j] == [own,other,other,empty,other,other] | board[i-3:i+3][j] == [other,other,other,empty,other,own]:
 		return True
-	if i <= 13 & j >= 1 & [board[i-3][j+3], board[i-2][j+2], board[i-1][j+1], board[i][j], board[i+1][j-1]] == [other,other,other,empty,other]:
+	if 2 <= i <= 11 & board[i-2:i+4][j] == [own,other,empty,other,other,other] | board[i-2:i+4][j] == [other,other,empty,other,other,own]:
+		return True
+	if 1 <= i <= 10 & board[i-1:i+5][j] == [other,empty,other,other,other,own]:
+		return True
+	if 0 <= i <= 9 & board[i:i+6][j] == [empty,other,other,other,other,own]:
 		return True
 
-	#right-down direction
-	if i <= 10 & j <= 10 & [board[i][j], board[i+1][j+1], board[i+2][j+2], board[i+3][j+3], board[i+4][j+4]] == [empty,other,other,other,other]:
+	#left oblique direction
+	if i == 4 & j == 4 & oblique_list(board, i, j, i-4, j-4) == [empty,other,other,other,other]:
 		return True
-	if i <= 11 & j <= 11 & [board[i-1][j-1], board[i][j], board[i+1][j+1], board[i+2][j+2], board[i+3][j+3]] == [other,empty,other,other,other]:
+	if i == 3 & j == 3 & oblique_list(board, i+1, j+1, i-3, j-3) == [other,empty,other,other,other]:
 		return True
-	if i <= 12 & j <= 12 & [board[i-2][j-2], board[i-1][j-1], board[i][j], board[i+1][j+1], board[i+2][j+2]] == [other,other,empty,other,other]:
+	if i == 2 & j == 2 & oblique_list(board, i+2, j+2, i-2, j-2) == [other,other,empty,other,other]:
 		return True
-	if i <= 13 & j <= 13 & [board[i-3][j-3], board[i-2][j-2], board[i-1][j-1], board[i][j], board[i+1][j+1]] == [other,other,other,empty,other]:
+	if i == 1 & j == 1 & oblique_list(board, i+3, j+3, i-1, j-1) == [other,other,other,empty,other]:
+		return True
+	if i == 10 & j == 10 & oblique_list(board, i, j, i+4, j+4) == [empty,other,other,other,other]:
+		return True
+	if i == 11 & j == 11 & oblique_list(board, i-1, j-1, i+3, j+3) == [other,empty,other,other,other]:
+		return True
+	if i == 12 & j == 12 & oblique_list(board, i-2, j-2, i+2, j+2) == [other,other,empty,other,other]:
+		return True
+	if i == 13 & j == 13 & oblique_list(board, i-3, j-3, i+1, j+1) == [other,other,other,empty,other]:
+		return True
+
+	if 5 <= i <= 14 & 5 <= j <= 14 & oblique_list(board, i, j, i-5, j-5) == [empty,other,other,other,other,own]:
+		return True
+	if 4 <= i <= 13 & 4 <= j <= 13 & oblique_list(board, i+1, j+1, i-4, j-4) == [other,empty,other,other,other,own]:
+		return True
+	if 3 <= i <= 12 & 3 <= j <= 12:
+		temp_list = oblique_list(board, i+2, j+2, i-3, j-3)
+		if temp_list == [other,other,empty,other,other,own] | temp_list == [own,other,empty,other,other,other]:
+			return True
+	if 2 <= i <= 11 & 2 <= j <= 11:
+		temp_list = oblique_list(board, i+3, j+3, i-2, j-2)
+		if temp_list == [other,other,other,empty,other,own] | temp_list == [own,other,other,empty,other,other]:
+			return True
+	if 1 <= i <= 10 & 1 <= j <= 10 & oblique_list(board, i+4, j+4, i-1, j-1) == [own,other,other,other,empty,other]:
+		return True
+	if 0 <= i <= 9 & 0 <= j <= 9 & oblique_list(board, i, j, i+5, j+5) == [empty,other,other,other,other,own]:
+		return True
+
+	#right oblique direction
+	if i == 10 & j == 4 & oblique_list(board, i, j, i+4, j-4) == [empty,other,other,other,other]:
+		return True
+	if i == 11 & j == 3 & oblique_list(board, i-1, j+1, i+3, j-3) == [other,empty,other,other,other]:
+		return True
+	if i == 12 & j == 2 & oblique_list(board, i-2, j+2, i+2, j-2) == [other,other,empty,other,other]:
+		return True
+	if i == 13 & j == 1 & oblique_list(board, i-3, j+3, i+1, j-1) == [other,other,other,empty,other]:
+		return True
+	if i == 4 & j == 10 & oblique_list(board, i, j, i-4, j+4) == [empty,other,other,other,other]:
+		return True
+	if i == 3 & j == 11 & oblique_list(board, i+1, j-1, i-3, j+3) == [other,empty,other,other,other]:
+		return True
+	if i == 2 & j == 12 & oblique_list(board, i+2, j-2, i-2, j+2) == [other,other,empty,other,other]:
+		return True
+	if i == 1 & j == 13 & oblique_list(board, i+3, j-3, i-1, j+1) == [other,other,other,empty,other]:
+		return True
+
+	if 0 <= i <= 9 & 5 <= j <= 14 & oblique_list(board, i, j, i+5, j-5) == [empty,other,other,other,other,own]:
+		return True
+	if 1 <= i <= 10 & 4 <= j <= 13 & oblique_list(board, i-1, j+1, i+4, j-4) == [other,empty,other,other,other,own]:
+		return True
+	if 2 <= i <= 11 & 3 <= j <= 12:
+		temp_list = oblique_list(board, i-2, j+2, i+3, j-3)
+		if temp_list == [other,other,empty,other,other,own] | temp_list == [own,other,empty,other,other,other]:
+			return True
+	if 3 <= i <= 12 & 2 <= j <= 11:
+		temp_list = oblique_list(board, i-3, j+3, i+2, j-2)
+		if temp_list == [other,other,other,empty,other,own] | temp_list == [own,other,other,empty,other,other]:
+			return True
+	if 4 <= i <= 13 & 1 <= j <= 10 & oblique_list(board, i+1, j-1, i-4, j+4) == [other,empty,other,other,other,own]:
+		return True
+	if 5 <= i <= 14 & 0 <= j <= 9 & oblique_list(board, i, j, i-5, j+5) == [empty,other,other,other,other,own]:
 		return True
 
 	return False
