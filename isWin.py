@@ -62,10 +62,10 @@ def isWin(l):
 							return cur_type
 						elif(l[j+1-z][j+1] != cur_type):
 							return cur_type
-				elif (l[j-z][i] != cur_type and l[j-z][i] == black_type):
+				elif (l[j-z][j] != cur_type and l[j-z][j] == black_type):
 					cur_type = black_type
 					max_chain = 1
-				elif (l[j-z][i] != cur_type and l[j-z][i] == white_type):
+				elif (l[j-z][j] != cur_type and l[j-z][j] == white_type):
 					cur_type = white_type
 					max_chain = 1
 		elif (z >= 0):
