@@ -418,6 +418,8 @@ class chess_last(QLabel):
             return super().mouseMoveEvent(QMouseEvent)  
 class chessboard(QLabel):
     opacity = 1
+    start_chess = pyqtSignal()
+
     def __init__(self,parent):
         super(chessboard,self).__init__(parent)
         board_image = QImage("src/chessboard.png") 
@@ -443,7 +445,30 @@ class chessboard(QLabel):
         self.player2_timer.setInterval(1000)
         self.hide()
         self.cursor.cursor_signal.connect(self.drawChess)        
-    
+        self.start_chess.connect(self.drawFirstChess)
+    def drawFirstChess(self):
+        global count_white
+        global count_black
+        global black_or_white
+        global board_list
+        global last_chess_type
+        global last_cursor_x
+        global last_cursor_y
+        pixel_per_halfchess = ((BOARD_SIZE - BOARD_OFFSET) / (LISTSIZE - 1)) / 2
+        if your_choose == 0:
+            self.player2_timer.start()
+            last_chess_type = 0
+            last_cursor_x = cursor_x
+            last_cursor_y = cursor_y
+            list_temp = naive_mode(board_list,AI_BLACK)
+            self.lastchess.setGeometry(QRect(list_temp[0] * pixel_per_halfchess * 2 + CHESS_OFFSET,list_temp[1] * pixel_per_halfchess * 2 + CHESS_OFFSET,CHESS_SIZE,CHESS_SIZE))
+            self.lastchess.show()
+            self.list_chess_b[count_black].setGeometry(QRect(list_temp[0] * pixel_per_halfchess * 2 + CHESS_OFFSET,list_temp[1] * pixel_per_halfchess * 2 + CHESS_OFFSET,CHESS_SIZE,CHESS_SIZE))                         
+            count_black += 1
+            board_list[list_temp[0]][list_temp[1]] = 2
+            self.player2_timer.stop() 
+            black_or_white = 0
+            self.player1_timer.start()
     def drawChess(self):
         global count_white
         global count_black
@@ -466,7 +491,6 @@ class chessboard(QLabel):
                         print("black win")
                     else:
                         self.player1_timer.start()
-                        black_or_white = 1 
                         last_chess_type = 255
                         last_cursor_x = cursor_x
                         last_cursor_y = cursor_y
@@ -477,6 +501,8 @@ class chessboard(QLabel):
                         count_white += 1
                         board_list[list_temp[0]][list_temp[1]] = 1
                         self.player1_timer.stop()
+                        if isWin(board_list) == 1:
+                            print("white win")
                         black_or_white = 1
                         self.player2_timer.start()          
             else:
@@ -491,7 +517,6 @@ class chessboard(QLabel):
                         print("white win")
                     else:
                         self.player2_timer.start()
-                        black_or_white = 0
                         last_chess_type = 0
                         last_cursor_x = cursor_x
                         last_cursor_y = cursor_y
@@ -499,9 +524,11 @@ class chessboard(QLabel):
                         self.lastchess.setGeometry(QRect(list_temp[0] * pixel_per_halfchess * 2 + CHESS_OFFSET,list_temp[1] * pixel_per_halfchess * 2 + CHESS_OFFSET,CHESS_SIZE,CHESS_SIZE))
                         self.lastchess.show()
                         self.list_chess_b[count_black].setGeometry(QRect(list_temp[0] * pixel_per_halfchess * 2 + CHESS_OFFSET,list_temp[1] * pixel_per_halfchess * 2 + CHESS_OFFSET,CHESS_SIZE,CHESS_SIZE))                         
-                        count_blalck += 1
+                        count_black += 1
                         board_list[list_temp[0]][list_temp[1]] = 2
                         self.player2_timer.stop() 
+                        if isWin(board_list) == 2:
+                            print("black win")
                         black_or_white = 0
                         self.player1_timer.start()
 
@@ -580,6 +607,7 @@ class gobang_gui(QMainWindow):
         self.select1.hide()
         self.select2.hide()
         self.board.show()
+        self.board.start_chess.emit()
     def change_select1(self):
         self.select1.setPixmap(QPixmap.fromImage(self.select1.select_image_1_1))
         self.chooseb.setGeometry(QRect(SELECT2_OFFSET_X + SELECT_WIDTH + 50,SELECT2_OFFSET_Y+5,CHOOSE_WIDTH,CHOOSE_HEIGHT))
@@ -651,4 +679,5 @@ gobang_mainwindow = gobang_gui()
 gobang_mainwindow.show()
 
 sys.exit(app.exec_())
+print(1)
 os.system("pause")
