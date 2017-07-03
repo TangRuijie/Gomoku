@@ -651,5 +651,4 @@ gobang_mainwindow = gobang_gui()
 gobang_mainwindow.show()
 
 sys.exit(app.exec_())
-print(1)
 os.system("pause")
