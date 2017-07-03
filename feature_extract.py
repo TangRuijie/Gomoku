@@ -558,13 +558,13 @@ def live_three_horizontal(board, i, j, stone):
 		own = 2
 		other = 1
 
-	if 4 <= j <= 13 & board[i][j-4:j+2] == [empty,empty,own,own,empty,empty]:
+	if 4 <= j <= 13 & (board[i][j-4:j+2] == [empty,empty,own,own,empty,empty] | board[i][j-4:j+2] == [empty,own,own,empty,empty,empty] | board[i][j-4:j+2] == [empty,own,empty,own,empty,empty]):
 		return True
-	if 3 <= j <= 12 & (board[i][j-3:j+3] == [empty,own,own,empty,empty,empty] | board[i][j-3:j+3] == [empty,empty,own,empty,own,empty]):
+	if 3 <= j <= 12 & (board[i][j-3:j+3] == [empty,own,own,empty,empty,empty] | board[i][j-3:j+3] == [empty,empty,own,empty,own,empty] | board[i][j-3:j+3] == [empty,own,empty,empty,own,empty]):
 		return True
-	if 2 <= j <= 11 & (board[i][j-2:j+4] == [empty,own,empty,own,empty,empty] | board[i][j-2:j+4] == [empty,empty,empty,own,own,empty]):
+	if 2 <= j <= 11 & (board[i][j-2:j+4] == [empty,own,empty,own,empty,empty] | board[i][j-2:j+4] == [empty,empty,empty,own,own,empty] | board[i][j-2:j+4] == [empty,own,empty,empty,own,empty]):
 		return True
-	if 1 <= j <= 10 & board[i][j-1:j+5] == [empty,empty,own,own,empty,empty]:
+	if 1 <= j <= 10 & (board[i][j-1:j+5] == [empty,empty,own,own,empty,empty] | board[i][j-1:j+5] == [empty,empty,empty,own,own,empty] | board[i][j-1:j+5] == [empty,empty,own,empty,own,empty]):
 		return True
 
 	return False
@@ -580,13 +580,13 @@ def live_three_vertical(board, i, j, stone):
 		own = 2
 		other = 1
 
-	if 4 <= i <= 13 & board[i-4:i+2][j] == [empty,empty,own,own,empty,empty]:
+	if 4 <= i <= 13 & (board[i-4:i+2][j] == [empty,empty,own,own,empty,empty] | board[i-4:i+2][j] == [empty,own,own,empty,empty,empty] | board[i-4:i+2][j] == [empty,own,empty,own,empty,empty]):
 		return True
-	if 3 <= i <= 12 & (board[i-3:i+3][j] == [empty,own,own,empty,empty,empty] | board[i-3:i+3][j] == [empty,empty,own,empty,own,empty]):
+	if 3 <= i <= 12 & (board[i-3:i+3][j] == [empty,own,own,empty,empty,empty] | board[i-3:i+3][j] == [empty,empty,own,empty,own,empty] | board[i-3:i+3][j] == [empty,own,empty,empty,own,empty]):
 		return True
-	if 2 <= i <= 11 & (board[i-2:i+4][j] == [empty,own,empty,own,empty,empty] | board[i-2:i+4][j] == [empty,empty,empty,own,own,empty]):
+	if 2 <= i <= 11 & (board[i-2:i+4][j] == [empty,own,empty,own,empty,empty] | board[i-2:i+4][j] == [empty,empty,empty,own,own,empty] | board[i-2:i+4][j] == [empty,own,empty,empty,own,empty]):
 		return True
-	if 1 <= i <= 10 & board[i-1:i+5][j] == [empty,empty,own,own,empty,empty]:
+	if 1 <= i <= 10 & (board[i-1:i+5][j] == [empty,empty,own,own,empty,empty] | board[i-1:i+5][j] == [empty,empty,empty,own,own,empty] | board[i-1:i+5][j] == [empty,empty,own,empty,own,empty]):
 		return True
 
 	return False
@@ -602,18 +602,22 @@ def live_three_left_oblique(board, i, j, stone):
 		own = 2
 		other = 1
 
-	if 4 <= i <= 13 & 4 <= j <= 13 & oblique_list(board, i+1, j+1, i-4, j-4) == [empty,empty,own,own,empty,empty]:
-		return True
+	if 4 <= i <= 13 & 4 <= j <= 13:
+		temp_list = oblique_list(board, i-4, j-4, i+1, j+1)
+		if temp_list == [empty,empty,own,own,empty,empty] | temp_list == [empty,own,own,empty,empty,empty] | temp_list == [empty,own,empty,own,empty,empty]:
+			return True
 	if 3 <= i <= 12 & 3 <= j <= 12:
-		temp_list = oblique_list(board, i+2, j+2, i-3, j-3)
-		if temp_list == [empty,empty,empty,own,own,empty] | temp_list == [empty,own,empty,own,empty,empty]:
+		temp_list = oblique_list(board, i-3, j-3, i+2, j+2)
+		if temp_list == [empty,own,own,empty,empty,empty] | temp_list == [empty,empty,own,empty,own,empty] | temp_list == [empty,own,empty,empty,own,empty]:
 			return True
 	if 2 <= i <= 11 & 2 <= j <= 11:
 		temp_list = oblique_list(board, i-2, j-2, i+3, j+3)
-		if temp_list == [empty,own,empty,own,empty,empty] | temp_list == [empty,empty,empty,own,own,empty]:
-		return True
-	if 1 <= i <= 10 & 1 <= j <= 10 & oblique_list(board, i-1, j-1, i+4, j+4) == [empty,empty,own,own,empty,empty]:
-		return True
+		if temp_list == [empty,own,empty,own,empty,empty] | temp_list == [empty,empty,empty,own,own,empty] | temp_list == [empty,own,empty,empty,own,empty]:
+			return True
+	if 1 <= i <= 10 & 1 <= j <= 10:
+		temp_list = oblique_list(board, i-1, j-1, i+4, j+4)
+		if temp_list == [empty,empty,own,own,empty,empty] | temp_list == [empty,empty,empty,own,own,empty] | temp_list == [empty,empty,own,empty,own,empty]:
+			return True
 
 	return False
 
@@ -628,18 +632,24 @@ def live_three_right_oblique(board, i, j, stone):
 		own = 2
 		other = 1
 
-	if 1 <= i <= 10 & 4 <= j <= 13 & oblique_list(board, i-1, j+1, i+4, j-4) == [empty,empty,own,own,empty,empty]:
-		return True
+	if 1 <= i <= 10 & 4 <= j <= 13:
+		temp_list = oblique_list(board, i+4, j-4, i-1, j+1)
+		if temp_list == [empty,empty,own,own,empty,empty] | temp_list == [empty,own,own,empty,empty,empty] | temp_list == [empty,own,empty,own,empty,empty]:
+			return True
 	if 2 <= i <= 11 & 3 <= j <= 12:
-		temp_list = oblique_list(board, i-2, j+2, i+3, j-3)
-		if temp_list == [empty,empty,empty,own,own,empty] | temp_list == [empty,own,empty,own,empty,empty]:
+		temp_list = oblique_list(board, i+3, j-3, i-2, j+2)
+		if temp_list == [empty,own,own,empty,empty,empty] | temp_list == [empty,empty,own,empty,own,empty] | temp_list == [empty,own,empty,empty,own,empty]:
 			return True
 	if 3 <= i <= 12 & 2 <= j <= 11:
-		temp_list = oblique_list(board, i-3, j+3, i+2, j-2)
-		if temp_list == [empty,empty,own,empty,own,empty] | temp_list == [empty,own,own,empty,empty,empty]:
+		temp_list = oblique_list(board, i+2, j-2, i-3, j+3)
+		if temp_list == [empty,own,empty,own,empty,empty] | temp_list == [empty,empty,empty,own,own,empty] | temp_list == [empty,own,empty,empty,own,empty]:
 			return True
-	if 4 <= i <= 13 & 1 <= j <= 10 & oblique_list(board, i+1, j-1, i-4, j+4) == [empty,empty,own,own,empty,empty]:
-		return True
+	if 4 <= i <= 13 & 1 <= j <= 10:
+		temp_list = oblique_list(board, i+1, j-1, i-4, j+4)
+		if temp_list == [empty,empty,own,own,empty,empty] | temp_list == [empty,empty,empty,own,own,empty] | temp_list == [empty,empty,own,empty,own,empty]:
+			return True
+
+	return False
 
 def live_three(board, i, j, stone):
 	count = 0
@@ -672,3 +682,15 @@ def double_live_three(board, i, j, stone):
 		return True
 	else:
 		return False
+
+def three_horizontal(board, i, j, stone):
+	own = 0
+	other = 0
+	empty = 0
+	if stone == 'w':
+		own = 1
+		other = 2
+	else:
+		own = 2
+		other = 1
+
