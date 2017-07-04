@@ -745,3 +745,66 @@ def three_horizontal(board, i, j, stone):
 			return True
 
 	return False
+
+def three_vertical(board, i, j, stone):
+	own = 0
+	other = 0
+	empty = 0
+	if stone == 'w':
+		own = 1
+		other = 2
+	else:
+		own = 2
+		other = 1
+
+	if i == 0:
+		temp_list = board[i:i+5][j]
+		if temp_list == [empty,own,own,empty,empty] | temp_list == [empty,own,empty,own,empty] | temp_list == [empty,empty,own,own,empty]:
+			return True
+	if i == 1:
+		temp_list = board[i-1:i+4][j]
+		if temp_list == [own,empty,own,,empty,empty] | temp_list == [own,empty,empty,own,empty]:
+			return True
+	if i == 2:
+		temp_list = board[i-2:i+3][j]
+		if temp_list == [own,own,empty,empty,empty] | temp_list == [own,empty,empty,own,empty]:
+			return True
+	if i == 3:
+		temp_list = board[i-3:i+2][j]
+		if temp_list == [own,own,empty,empty,empty] | temp_list == [own,empty,own,empty,empty]:
+			return True
+	if i == 14:
+		temp_list = board[i-4:i+1][j]
+		if temp_list == [empty,empty,own,own,empty] | temp_list == [empty,own,empty,own,empty] | temp_list == [empty,own,own,empty,empty]:
+			return True
+	if i == 13:
+		temp_list = board[i-3:i+2][j]
+		if temp_list == [empty,empty,own,empty,own] | temp_list == [empty,own,empty,empty,own]:
+			return True
+	if i == 12:
+		temp_list = board[i-2:i+3][j]
+		if temp_list == [empty,empty,empty,own,own] | temp_list == [empty,own,empty,empty,own]:
+			return True
+	if i == 11:
+		temp_list = board[i-1:i+4][j]
+		if temp_list == [empty,empty,empty,own,own] | temp_list == [empty,empty,own,empty,own]:
+			return True
+
+	if 1 <= i <= 10:
+		temp_list = board[i-1:i+5][j]
+		if temp_list == [other,empty,own,own,empty,empty] | temp_list == [other,empty,own,empty,own,empty] | temp_list == [empty,empty,empty,own,own,other] | temp_list == [other,empty,empty,own,own,empty] | temp_list == [empty,empty,own,empty,own,other]:
+			return True
+	if 2 <= i <= 11:
+		temp_list = board[i-2:i+4][j]
+		if temp_list == [other,own,empty,own,empty,empty] | temp_list == [empty,empty,empty,own,own,other] | temp_list == [other,own,empty,empty,own,empty] | temp_list == [empty,own,empty,empty,own,other]:
+			return True
+	if 3 <= i <= 12:
+		temp_list = board[i-3:i+3][j]
+		if temp_list == [other,own,own,empty,empty,empty] | temp_list == [empty,empty,own,empty,own,other] | temp_list == [empty,own,empty,empty,own,other] | temp_list == [other,own,empty,empty,own,empty]:
+			return True
+	if 4 <= i <= 13:
+		temp_list = board[i-4:i+2][j]
+		if temp_list == [empty,empty,own,own,empty,other] | temp_list == [other,own,own,empty,empty,empty] | temp_list == [empty,own,empty,own,empty,other] | temp_list == [other,own,empty,own,empty,empty] | temp_list == [empty,own,own,empty,empty,other]:
+			return True
+
+	return False
