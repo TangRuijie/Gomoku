@@ -1,3 +1,4 @@
+#empty 0 white 1 black 2
 def oblique_list(board, istart, jstart, iend, jend):
 	_list = []
 	i = istart
@@ -24,11 +25,12 @@ def oblique_list(board, istart, jstart, iend, jend):
 			j -= 1
 	return _list
 
-#empty 0 white 1 black 2
-# AAAAA
 def five(board, i, j, stone):
+	if board[i][j] != 0:
+		return False
 	own = 0
 	other = 0
+	empty = 0
 	if stone == 'w':
 		own = 1
 		other = 2
@@ -86,8 +88,9 @@ def five(board, i, j, stone):
 
 	return False
 
-# EAAAAE
 def live_four(board, i, j, stone):
+	if board[i][j] != 0:
+		return False
 	own = 0
 	other = 0
 	empty = 0
@@ -373,6 +376,8 @@ def four_right_oblique(board, i, j, stone):
 	return False
 
 def four(board, i, j, stone):
+	if board[i][j] != 0:
+		return False
 	count = 0
 	if four_horizental(board, i, j, stone) == True:
 		count += 1
@@ -388,6 +393,8 @@ def four(board, i, j, stone):
 		return False
 
 def double_four(board, i, j, stone):
+	if board[i][j] != 0:
+		return False
 	count = 0
 	if four_horizental(board, i, j, stone) == True:
 		count += 1
@@ -402,8 +409,9 @@ def double_four(board, i, j, stone):
 	else:
 		return False
 
-# BAAAAB or BAAABA or BAABAA or BABAAA 
 def seal_four(board, i, j, stone):
+	if board[i][j] != 0:
+		return False
 	own = 0
 	other = 0
 	empty = 0
@@ -652,6 +660,8 @@ def live_three_right_oblique(board, i, j, stone):
 	return False
 
 def live_three(board, i, j, stone):
+	if board[i][j] != 0:
+		return False
 	count = 0
 	if live_three_horizontal(board, i, j, stone) == True:
 		count += 1
@@ -668,6 +678,8 @@ def live_three(board, i, j, stone):
 		return False
 
 def double_live_three(board, i, j, stone):
+	if board[i][j] != 0:
+		return False
 	count = 0
 	if live_three_horizontal(board, i, j, stone) == True:
 		count += 1
@@ -936,6 +948,8 @@ def three_right_oblique(board, i, j, stone):
 	return False
 
 def three(board, i, j, stone):
+	if board[i][j] != 0:
+		return False
 	count = 0
 	if three_horizontal(board, i, j, stone) == True:
 		count += 1
@@ -952,6 +966,8 @@ def three(board, i, j, stone):
 		return False
 
 def double_three(board, i, j, stone):
+	if board[i][j] != 0:
+		return False
 	count = 0
 	if three_horizontal(board, i, j, stone) == True:
 		count += 1
@@ -1124,6 +1140,8 @@ def seal_live_three_right_oblique(board, i, j, stone):
 	return False
 
 def seal_live_three(board, i, j, stone):
+	if board[i][j] != 0:
+		return False
 	count = 0
 	if seal_live_three_horizontal(board, i, j, stone) == True:
 		count += 1
@@ -1140,6 +1158,8 @@ def seal_live_three(board, i, j, stone):
 		return False
 
 def seal_double_live_three(board, i, j, stone):
+	if board[i][j] != 0:
+		return False
 	count = 0
 	if seal_live_three_horizontal(board, i, j, stone) == True:
 		count += 1
@@ -1440,6 +1460,8 @@ def seal_three_right_oblique(board, i, j, stone):
 	return False
 
 def seal_three(board, i, j, stone):
+	if board[i][j] != 0:
+		return False
 	count = 0
 	if seal_three_horizontal(board, i, j, stone) == True:
 		count += 1
@@ -1456,6 +1478,8 @@ def seal_three(board, i, j, stone):
 		return False
 
 def seal_double_three(board, i, j, stone):
+	if board[i][j] != 0:
+		return False
 	count = 0
 	if seal_three_horizontal(board, i, j, stone) == True:
 		count += 1
