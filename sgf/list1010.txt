@@ -1,0 +1,1 @@
+B[hh];W[hi];B[hj];W[ij];B[ji];W[gi];B[gh];W[ih];B[ii];W[jj];B[fi];W[ej];B[jg];

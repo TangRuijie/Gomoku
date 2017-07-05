@@ -1,0 +1,1 @@
+B[hh];W[ii];B[ij];W[gj];B[fi];W[gh];B[gk];W[fk];B[hi];W[hj];B[di];W[ei];B[gf];W[hf];B[eg];W[dg];B[fe];W[ed];B[ge];W[he];B[hd];W[ff];B[ji];W[kh];B[jk];W[kl];B[jg];W[jh];B[gd];W[gg];B[ie];W[jf];B[ih];W[hg];B[id];
