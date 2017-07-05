@@ -11,25 +11,25 @@ def handle_score(board, i, j, type):
 		stone = 'w'
 
 	if five(board, i, j, stone):
-		score += 10000
+		score += 50000
 
 	if live_four(board, i, j, stone):
-		score += 1500
+		score += 8000
 
 	if four(board, i, j, stone):
 		score += 1200
 
 	if double_four(board, i, j, stone):
-		score += 1500
+		score += 8000
 
 	if seal_four(board, i, j, stone):
-		score += 1800
+		score += 40000
 
 	if live_three(board, i, j, stone):
 		score += 1200
 
 	if double_live_three(board, i, j, stone):
-		score += 1500
+		score += 8000
 
 	if three(board, i, j, stone):
 		score += 800
@@ -38,16 +38,16 @@ def handle_score(board, i, j, type):
 		score += 1000
 
 	if seal_live_three(board, i, j, stone):
-		score += 1700
+		score += 8000
 
 	if seal_double_live_three(board, i, j, stone):
-		score += 1800
+		score += 10000
 
 	if seal_three(board, i, j, stone):
 		score += 1000
 
 	if seal_double_three(board, i, j, stone):
-		score += 1200
+		score += 5000
 
 	if single_live_two(board, i, j, stone):
 		score += 800
@@ -74,10 +74,10 @@ def handle_score(board, i, j, type):
 		score += 600
 
 	if four_and_live_three(board, i, j, stone):
-		score += 1500
+		score += 10000
 
 	if seal_four_and_live_three(board, i, j, stone):
-		score += 1800
+		score += 35000
 
 	return score
 
@@ -113,6 +113,8 @@ def naive_mode(l, ai_num):
 		for j in range(15):
 			if (l[i][j] == blank_type):
 				point[i][j] += handle_score(l, i, j, ai_num)
+			else:
+				point[i][j] -= 10000
 
 	max_point = 0
 	max_i = -1
