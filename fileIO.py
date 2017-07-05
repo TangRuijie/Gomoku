@@ -67,6 +67,16 @@ def handle_feature(board, stone):
 			else:
 				feature_vector.append(0)
 
+			if four_and_live_three(board, i, j, stone):
+				feature_vector.append(1)
+			else:
+				feature_vector.append(0)
+
+			if seal_four_and_live_three(board, i, j, stone):
+				feature_vector.append(1)
+			else:
+				feature_vector.append(0)
+
 			if four(board, i, j, stone):
 				feature_vector.append(1)
 			else:
