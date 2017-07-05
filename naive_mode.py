@@ -1,70 +1,85 @@
 import random
 import re
+from feature_extract import *
 
+def handle_score(board, i, j, type):
+	stone = 0
+	score = 0
+	if type == 2:
+		stone = 'b'
+	else:
+		stone = 'w'
 
-def m_search(l, i, j):
-	l[i][j] = 'A'
-	add_score = 0
-	feature_num = 13
-	feature_list = []
-	for x in range(feature_num):
-		feature_list.append(0)
-	model_list = ['EAAAAE', 'AAAAE','AAAEA', 'AAEAA', 'EEAAAEE', 'AAAEE', 'EAEAAE', 'AEEAA', 'AEAEA', 'EEEAAEEE', 'AAEEE', 'EEAEAEE', 'EAEEAE']
-	score_list = [300000, 2500, 3000, 2600, 3000, 500, 800, 600, 550, 650, 150, 250, 200]
-	# if (x >= 4 and x <= 10 and x >= 4 and x <= 10):
-	# 	#-|/\
-	# 	str1 = ''.join(l[i][(j-4):(j+5)])
-	# 	str2 = ''.join(l[(i-4):(i+5)][j])
-	# 	str3_list = []
-	# 	str4_list = []
-	# 	for x in range(9):
-	# 		x -= 4
-	# 		str3_list.append(l[i+x][j-x])
-	# 		str4_list.append(l[i+x][j+x])
-	# 	str3 = ''.join(str3_list)
-	# 	str4 = ''.join(str4_list)
-	# elif():
-	#-|/\
-	str1 = ''.join(l[i][:])
-	str2 = ''.join(l[:][j])
-	str3_list = []
-	str4_list = []
-	#/
-	temp_i = i
-	temp_j = j
-	while(temp_i < 14 and temp_j > 0):
-		temp_i += 1
-		temp_j -= 1
-	while(temp_i >= 0 and temp_j <= 14):
-		str3_list.append(l[temp_i][temp_j])
-		temp_i -= 1
-		temp_j += 1
-	str3 = ''.join(str3_list)
-	#\
-	temp_i = i
-	temp_j = j
-	while(temp_i > 0 and temp_j > 0):
-		temp_i -= 1
-		temp_j -= 1
-	while(temp_i <= 14 and temp_j <= 14):
-		str4_list.append(l[temp_i][temp_j])
-		temp_i += 1
-		temp_j += 1
-	str4 = ''.join(str4_list)
+	if five(board, i, j, stone):
+		score += 10000
 
-	#search
-	for x in range(feature_num):
-		if (re.search(model_list[x], str1)):
-			feature_list[x] += 1
-		if (re.search(model_list[x], str2)):
-			feature_list[x] += 1
-		if (re.search(model_list[x], str3)):
-			feature_list[x] += 1
-		if (re.search(model_list[x], str4)):
-			feature_list[x] += 1
-		add_score += feature_list[x] * score_list[x]
-	return add_score
+	if live_four(board, i, j, stone):
+		score += 1500
 
+	if four(board, i, j, stone):
+		score += 1200
+
+	if double_four(board, i, j, stone):
+		score += 1500
+
+	if seal_four(board, i, j, stone):
+		score += 1800
+
+	if live_three(board, i, j, stone):
+		score += 1200
+
+	if double_live_three(board, i, j, stone):
+		score += 1500
+
+	if three(board, i, j, stone):
+		score += 800
+
+	if double_three(board, i, j, stone):
+		score += 1000
+
+	if seal_live_three(board, i, j, stone):
+		score += 1700
+
+	if seal_double_live_three(board, i, j, stone):
+		score += 1800
+
+	if seal_three(board, i, j, stone):
+		score += 1000
+
+	if seal_double_three(board, i, j, stone):
+		score += 1200
+
+	if single_live_two(board, i, j, stone):
+		score += 800
+
+	if double_live_two(board, i, j, stone):
+		score += 800
+
+	if single_sleep_two(board, i, j, stone):
+		score += 600
+
+	if double_sleep_two(board, i, j, stone):
+		score += 1000
+
+	if single_seal_livetwo(board, i, j, stone):
+		score += 800
+
+	if double_seal_livetwo(board, i, j, stone):
+		score += 800
+
+	if single_seal_sleep_two(board, i, j, stone):
+		score += 600
+
+	if double_seal_sleep_two(board, i, j, stone):
+		score += 600
+
+	if four_and_live_three(board, i, j, stone):
+		score += 1500
+
+	if seal_four_and_live_three(board, i, j, stone):
+		score += 1800
+
+	return score
 
 
 def naive_mode(l, ai_num):
@@ -93,24 +108,11 @@ def naive_mode(l, ai_num):
 	[fir_step,sec_step,sec_step,sec_step,sec_step,sec_step,sec_step,sec_step,sec_step,sec_step,sec_step,sec_step,sec_step,sec_step,fir_step],
 	[fir_step,fir_step,fir_step,fir_step,fir_step,fir_step,fir_step,fir_step,fir_step,fir_step,fir_step,fir_step,fir_step,fir_step,fir_step]]
 
-	#change l to l_new
-	l_new = []
-	for i in range(15):
-		l_new.append([])
-	for i in range(15):
-		for j in range(15):
-			if (l[i][j] == blank_type):
-				l_new[i].append('E')
-			elif (l[i][j] == ai_num):
-				l_new[i].append('A')
-			else:
-				l_new[i].append('B')
-
 	#score
 	for i in range(15):
 		for j in range(15):
 			if (l[i][j] == blank_type):
-				point[i][j] += m_search(l_new, i, j)
+				point[i][j] += handle_score(l, i, j, ai_num)
 
 	max_point = 0
 	max_i = -1
