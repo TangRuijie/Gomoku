@@ -2337,3 +2337,15 @@ def double_seal_sleep_two(board, i, j, stone):
 		return True
 	else:
 		return False
+
+def four_and_live_three(board, i, j, stone):
+	if four(board, i, j, stone) and live_three(board, i, j, stone):
+		return True
+	else:
+		return False
+
+def seal_four_and_live_three(board, i, j, stone):
+	if seal_four(board, i, j, stone) and seal_live_three(board, i, j, stone):
+		return True
+	else:
+		return False
