@@ -44,6 +44,85 @@ def handle_score(board, i, j, type):
 		score += 5000
 
 	if four(board, i, j, stone):
+		score += 7000
+
+	if double_seal_livetwo(board, i, j, stone):
+		score += 4000
+
+	if seal_three(board, i, j, stone):
+		score += 100
+
+	if single_seal_livetwo(board, i, j, stone):
+		score += 90
+
+	if double_three(board, i, j, stone):
+		score += 80
+
+	if double_seal_sleep_two(board, i, j, stone):
+		score += 70
+
+	if three(board, i, j, stone):
+		score += 60
+
+	if single_seal_sleep_two(board, i, j, stone):
+		score += 50
+
+	if double_live_two(board, i, j, stone):
+		score += 40
+
+	if single_live_two(board, i, j, stone):
+		score += 30
+
+	if double_sleep_two(board, i, j, stone):
+		score += 20
+
+	if single_sleep_two(board, i, j, stone):
+		score += 10
+
+	return score
+
+def handle_score_simple(board, i, j, type):
+	stone = 0
+	score = 0
+	if type == 2:
+		stone = 'b'
+	else:
+		stone = 'w'
+
+	if five(board, i, j, stone):
+		score += 10000000
+
+	if seal_four(board, i, j, stone):
+		score += 1000000
+
+	if live_four(board, i, j, stone):
+		score += 500000
+
+	if double_four(board, i, j, stone):
+		score += 0
+
+	if four_and_live_three(board, i, j, stone):
+		score += 0
+
+	if seal_double_three(board, i, j, stone):
+		score += 50000
+
+	if seal_three_and_live_two(board, i, j, stone):
+		score += 30000
+
+	if seal_jump_live_three(board, i, j, stone):
+		score += 28000
+
+	if seal_live_three(board, i, j, stone):
+		score += 25000
+
+	if double_live_three(board, i, j, stone):
+		score += 0
+
+	if live_three(board, i, j, stone):
+		score += 5000
+
+	if four(board, i, j, stone):
 		score += 100
 
 	if double_seal_livetwo(board, i, j, stone):
@@ -81,7 +160,7 @@ def handle_score(board, i, j, type):
 
 	return score
 
-def naive_mode(l, ai_num):
+def naive_mode(l, ai_num, hard):
 	blank_type = 0
 	fir_step = 0
 	sec_step = 1
@@ -111,7 +190,10 @@ def naive_mode(l, ai_num):
 	for i in range(15):
 		for j in range(15):
 			if (l[i][j] == blank_type):
-				point[i][j] += handle_score(l, i, j, ai_num)
+				if hard == 0:
+					point[i][j] += handle_score_simple(l, i, j, ai_num)
+				else:
+					point[i][j] += handle_score(l, i, j, ai_num)
 			else:
 				point[i][j] -= 10000
 
@@ -131,6 +213,5 @@ def naive_mode(l, ai_num):
 					max_i = i
 					max_j = j
 
-	print(max_point)
 	return [max_i, max_j]
 
