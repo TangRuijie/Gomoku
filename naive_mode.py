@@ -31,8 +31,11 @@ def handle_score(board, i, j, type):
 	if seal_three_and_live_two(board, i, j, stone):
 		score += 30000
 
+	if seal_jump_live_three(board, i, j, stone):
+		score += 28000
+
 	if seal_live_three(board, i, j, stone):
-		score += 20000
+		score += 25000
 
 	if double_live_three(board, i, j, stone):
 		score += 8000
@@ -41,10 +44,10 @@ def handle_score(board, i, j, type):
 		score += 5000
 
 	if four(board, i, j, stone):
-		score += 4900
+		score += 100
 
 	if double_seal_livetwo(board, i, j, stone):
-		score += 2000
+		score += 4000
 
 	if seal_three(board, i, j, stone):
 		score += 100
@@ -77,7 +80,6 @@ def handle_score(board, i, j, type):
 		score += 10
 
 	return score
-
 
 def naive_mode(l, ai_num):
 	blank_type = 0
@@ -129,5 +131,6 @@ def naive_mode(l, ai_num):
 					max_i = i
 					max_j = j
 
+	print(max_point)
 	return [max_i, max_j]
 
