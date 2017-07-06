@@ -590,7 +590,7 @@ class Mythread(QThread):
         global last_cursor_x
         global last_cursor_y
         if black_or_white == 1:
-            list_temp = naive_mode(board_list,AI_BLACK)
+            list_temp = naive_mode(board_list,AI_BLACK,select2_clicked)
             board_list[list_temp[0]][list_temp[1]] = 2
             last_chess_type = 1
             last_cursor_x = list_temp[1]
@@ -598,7 +598,7 @@ class Mythread(QThread):
             print(list_temp[0],list_temp[1])
             self.finish_signal.emit()
         else:
-            list_temp = naive_mode(board_list,AI_WHITE)
+            list_temp = naive_mode(board_list,AI_WHITE,select2_clicked)
             board_list[list_temp[0]][list_temp[1]] = 1
             last_chess_type = 0
             last_cursor_x = list_temp[1]
@@ -961,8 +961,8 @@ class gobang_gui(QMainWindow):
         self.start_animation = QPropertyAnimation(self.start,b"geometry")
         self.start_animation.setDuration(500)
         self.start_animation.setEasingCurve(QEasingCurve.InQuad)
-        self.player1_time = 600 #player1 for white
-        self.player2_time = 600 #player2 for black
+        self.player1_time = 0 #player1 for white
+        self.player2_time = 0 #player2 for black
         self.list_numb = []
         self.list_numw = []
         for i in range(4):
@@ -984,7 +984,6 @@ class gobang_gui(QMainWindow):
         self.select2.change1.connect(self.change_select1)
         self.chooseb.go_b.connect(self.door_open)
         self.choosew.go_w.connect(self.door_open)
-
         self.openleft_animation.finished.connect(self.start_fade)
         self.fadetimer.timeout.connect(self.choosew.fade)
         self.fadetimer.timeout.connect(self.chooseb.fade)
@@ -1125,26 +1124,20 @@ class gobang_gui(QMainWindow):
         self.back_animation.start()
         self.start_animation.start()
     def addTime1(self):
-        if self.player1_time >= 0:
-            self.player1_time -= 1
+        if self.player1_time <= 9999:
+            self.player1_time += 1
             if self.player1_time >= 0 and self.player1_time < 10:
                 self.list_numw[0].shownum(self.player1_time)
-                self.list_numw[1].hide()
-                self.list_numw[2].hide()
-                self.list_numw[3].hide()
             if self.player1_time >= 10 and self.player1_time < 100:
                 self.list_numw[0].setGeometry(QRect(NUMPAD_OFFSET,NUMPAD_OFFSET,NUM_SIZE,NUM_SIZE))
                 self.list_numw[1].shownum(self.player1_time // 10)
                 self.list_numw[0].shownum(self.player1_time % 10)
-                self.list_numw[2].hide()
-                self.list_numw[3].hide()
             if self.player1_time >= 100 and self.player1_time < 1000:
                 self.list_numw[0].setGeometry(QRect(2 * NUMPAD_OFFSET,NUMPAD_OFFSET,NUM_SIZE,NUM_SIZE))
                 self.list_numw[1].setGeometry(QRect(NUMPAD_OFFSET,NUMPAD_OFFSET,NUM_SIZE,NUM_SIZE))
                 self.list_numw[2].shownum(self.player1_time // 100)
                 self.list_numw[1].shownum((self.player1_time % 100) // 10)
                 self.list_numw[0].shownum(self.player1_time % 10)
-                self.list_numw[3].hide()
             if self.player1_time >= 1000 and self.player1_time <= 9999:
                 self.list_numw[0].setGeometry(QRect(3 * NUMPAD_OFFSET,NUMPAD_OFFSET,NUM_SIZE,NUM_SIZE))
                 self.list_numw[1].setGeometry(QRect(2 * NUMPAD_OFFSET,NUMPAD_OFFSET,NUM_SIZE,NUM_SIZE))
@@ -1155,23 +1148,17 @@ class gobang_gui(QMainWindow):
                 self.list_numw[0].shownum(self.player1_time % 10)
             #print(self.player1_time)
     def addTime2(self):
-        if self.player2_time >= 0:
-            self.player2_time -= 1
+        if self.player2_time <= 9999:
+            self.player2_time += 1
             if self.player2_time >= 0 and self.player2_time < 10:
                 self.list_numb[0].shownum(self.player2_time)
-                self.list_numb[1].hide()
-                self.list_numb[2].hide()
-                self.list_numb[3].hide()
             if self.player2_time >= 10 and self.player2_time < 100:
                 self.list_numb[1].shownum(self.player2_time // 10)
                 self.list_numb[0].shownum(self.player2_time % 10)
-                self.list_numb[2].hide()
-                self.list_numb[3].hide()
             if self.player2_time >= 100 and self.player2_time < 1000:
                 self.list_numb[2].shownum(self.player2_time // 100)
                 self.list_numb[1].shownum((self.player2_time % 100) // 10)
                 self.list_numb[0].shownum(self.player2_time % 10)
-                self.list_numb[3].hide()
             if self.player2_time >= 1000 and self.player2_time <= 9999:
                 self.list_numb[3].shownum(self.player2_time // 1000)
                 self.list_numb[2].shownum((self.player2_time % 1000) // 100)
