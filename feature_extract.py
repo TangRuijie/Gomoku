@@ -1167,24 +1167,6 @@ def seal_live_three(board, i, j, stone):
 	else:
 		return False
 
-def seal_double_live_three(board, i, j, stone):
-	if board[i][j] != 0:
-		return False
-	count = 0
-	if seal_live_three_horizontal(board, i, j, stone) == True:
-		count += 1
-	if seal_live_three_vertical(board, i, j, stone) == True:
-		count += 1
-	if seal_live_three_left_oblique(board, i, j, stone) == True:
-		count += 1
-	if seal_live_three_right_oblique(board, i, j, stone) == True:
-		count += 1
-
-	if count > 1:
-		return True
-	else:
-		return False
-
 def seal_three_horizontal(board, i, j, stone):
 	own = 0
 	other = 0
@@ -1605,7 +1587,7 @@ def live_two_right_oblique(board, i, j, stone):
 
 	return False
 	
-def  single_live_two(board, i, j, stone):
+def single_live_two(board, i, j, stone):
 	if board[i][j] != 0:
 		return False
 
@@ -2339,13 +2321,19 @@ def double_seal_sleep_two(board, i, j, stone):
 		return False
 
 def four_and_live_three(board, i, j, stone):
-	if four(board, i, j, stone) and live_three(board, i, j, stone):
+	if four(board, i, j, stone) and (live_three(board, i, j, stone) or double_live_three(board, i, j, stone)):
 		return True
 	else:
 		return False
 
-def seal_four_and_live_three(board, i, j, stone):
-	if seal_four(board, i, j, stone) and seal_live_three(board, i, j, stone):
+def four_and_live_two(board, i, j, stone):
+	if four(board, i, j, stone) and (single_live_two(board, i, j, stone) or double_live_two(board, i, j, stone)):
+		return True
+	else:
+		return False
+
+def seal_three_and_live_two(board, i, j, stone):
+	if seal_three(board, i, j, stone) and (single_seal_livetwo(board, i, j, stone) or double_seal_livetwo(board, i, j, stone)):
 		return True
 	else:
 		return False
