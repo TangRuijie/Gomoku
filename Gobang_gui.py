@@ -44,6 +44,10 @@ PVP_SELECT_WIDTH = 30
 PVP_SELECT_HEIGHT = 20
 PVP_SELECT_OFFSET_X = 400
 PVP_SELECT_OFFSET_Y = 100
+DOOR_WIDTH = 512
+DOOR_HEIGHT = 768
+DOORLEFT_OFFSET_X = -512+137
+DOORRIGHT_OFFSET_X = 1024 -137
 
 AI_BLACK = 2
 AI_WHITE = 1
@@ -88,6 +92,30 @@ board_list = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
               [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
               ]
 
+class left_door(QLabel):
+    def __init__(self,parent):
+        super(left_door,self).__init__(parent)
+        self.door_image = QImage("src/door_left.png")
+        self.setGeometry(QRect(0,0,DOOR_WIDTH,DOOR_HEIGHT))
+        self.door_image = self.door_image.scaled(self.size(),
+					Qt.KeepAspectRatio,
+					Qt.SmoothTransformation)
+        self.setPixmap(QPixmap.fromImage(self.door_image))
+    def restart(self):
+        self.setGeometry(QRect(0,0,DOOR_WIDTH,DOOR_HEIGHT))
+
+class right_door(QLabel):
+    def __init__(self,parent):
+        super(right_door,self).__init__(parent)
+        self.door_image = QImage("src/door_right.png")
+        self.setGeometry(QRect(0 + 512,0,DOOR_WIDTH,DOOR_HEIGHT))
+        self.door_image = self.door_image.scaled(self.size(),
+					Qt.KeepAspectRatio,
+					Qt.SmoothTransformation)
+        self.setPixmap(QPixmap.fromImage(self.door_image))
+    def restart(self):
+        self.setGeometry(QRect(0 + 512,0,DOOR_WIDTH,DOOR_HEIGHT))
+                
 class pvp_p_button(QLabel):
     opacity = 1
     pvp_select = pyqtSignal()
@@ -114,6 +142,11 @@ class pvp_p_button(QLabel):
             self.effect.setOpacity(self.opacity)
             self.setGraphicsEffect(self.effect)
         self.opacity -= 0.1
+    def restart(self):
+        self.opacity = 1
+        self.effect.setOpacity(self.opacity)
+        self.setGraphicsEffect(self.effect)
+        self.setGeometry(QRect(PVP_SELECT_OFFSET_X,PVP_SELECT_OFFSET_Y,PVP_SELECT_WIDTH,PVP_SELECT_HEIGHT))
 
 class pvp_e_button(QLabel):
     opacity = 1
@@ -141,6 +174,11 @@ class pvp_e_button(QLabel):
             self.effect.setOpacity(self.opacity)
             self.setGraphicsEffect(self.effect)
         self.opacity -= 0.1
+    def restart(self):
+        self.opacity = 1
+        self.effect.setOpacity(self.opacity)
+        self.setGraphicsEffect(self.effect)
+        self.setGeometry(QRect(PVP_SELECT_OFFSET_X + 184,PVP_SELECT_OFFSET_Y,PVP_SELECT_WIDTH,PVP_SELECT_HEIGHT))
 
 class chess_button1(QLabel):
     go_w = pyqtSignal()
@@ -172,7 +210,6 @@ class chess_button1(QLabel):
     def leaveEvent(self, QEvent):
         self.setPixmap(QPixmap.fromImage(self.button_image))
         return super().leaveEvent(QEvent)
-
     def fade(self):
         if self.opacity <= 0.0:
             self.stop_timer.emit()
@@ -180,6 +217,13 @@ class chess_button1(QLabel):
             self.effect.setOpacity(self.opacity)
             self.setGraphicsEffect(self.effect)
         self.opacity -= 0.1
+    def restart(self):
+        self.opacity = 1
+        self.effect.setOpacity(self.opacity)
+        self.setGraphicsEffect(self.effect)
+        self.setGeometry(QRect(-100,-100,CHOOSE_WIDTH,CHOOSE_HEIGHT))
+        self.setPixmap(QPixmap.fromImage(self.button_image))
+        self.show()
 
 class chess_button2(QLabel):
     go_b = pyqtSignal()
@@ -211,7 +255,6 @@ class chess_button2(QLabel):
     def leaveEvent(self, QEvent):
         self.setPixmap(QPixmap.fromImage(self.button_image))
         return super().leaveEvent(QEvent)
-
     def fade(self):
         if self.opacity <= 0.0:
             self.stop_timer.emit()
@@ -219,7 +262,13 @@ class chess_button2(QLabel):
             self.effect.setOpacity(self.opacity)
             self.setGraphicsEffect(self.effect)
         self.opacity -= 0.1
-
+    def restart(self):       
+        self.opacity = 1
+        self.effect.setOpacity(self.opacity)
+        self.setGraphicsEffect(self.effect)
+        self.setGeometry(QRect(-100,-100,CHOOSE_WIDTH,CHOOSE_HEIGHT))
+        self.setPixmap(QPixmap.fromImage(self.button_image))
+        self.show()
 class select_button1(QLabel):
     change2 = pyqtSignal()
     stop_timer = pyqtSignal()
@@ -279,6 +328,12 @@ class select_button1(QLabel):
             self.effect.setOpacity(self.opacity)
             self.setGraphicsEffect(self.effect)
         self.opacity += 0.1
+    def restart(self):
+        self.opacity = 1
+        self.effect.setOpacity(self.opacity)
+        self.setGraphicsEffect(self.effect)
+        self.setGeometry(QRect(SELECT1_OFFSET_X,SELECT1_OFFSET_Y,SELECT_WIDTH,SELECT_HEIGHT))
+        self.setPixmap(QPixmap.fromImage(self.select_image_1_1))
 
 class select_button2(QLabel):
     change1 = pyqtSignal()
@@ -341,6 +396,12 @@ class select_button2(QLabel):
             self.effect.setOpacity(self.opacity)
             self.setGraphicsEffect(self.effect)
         self.opacity += 0.1
+    def restart(self):
+        self.opacity = 1
+        self.effect.setOpacity(self.opacity)
+        self.setGraphicsEffect(self.effect)
+        self.setGeometry(QRect(SELECT2_OFFSET_X,SELECT2_OFFSET_Y,SELECT_WIDTH,SELECT_HEIGHT))
+        self.setPixmap(QPixmap.fromImage(self.select_image_2_1))
 
 class numpadb(QLabel):
     def __init__(self,parent):
@@ -402,6 +463,7 @@ class dragrope(QLabel):
                 self.move_signal.emit()
         return super().mouseMoveEvent(QMouseEvent)
 
+
 class start_board(QLabel):
     def __init__(self,parent):
         super(start_board,self).__init__(parent)
@@ -412,7 +474,6 @@ class start_board(QLabel):
         self.setPixmap(QPixmap.fromImage(table_image))
         self.setGeometry(QRect(0,0,WINDOW_WIDTH,WINDOW_HEIGHT))
         self.show()
-
 class numpadw(QLabel):
     def __init__(self,parent):
         super(numpadw,self).__init__(parent)
@@ -439,7 +500,7 @@ class numpadw(QLabel):
 class background(QLabel):
     def __init__(self,parent):
         super(background,self).__init__(parent)
-        table_image = QImage("src/bg.jpg")
+        table_image = QImage("src/bg.png")
         table_image = table_image.scaled(parent.size(),
 					Qt.KeepAspectRatio,
 					Qt.SmoothTransformation)
@@ -460,6 +521,8 @@ class chess_black(QLabel):
         self.show()
     def mouseMoveEvent(self, QMouseEvent):
         return super().mouseMoveEvent(QMouseEvent)
+    def restart(self):
+        self.setGeometry(QRect(-100,-100,CHESS_SIZE,CHESS_SIZE))
 
 class chess_white(QLabel):
     def __init__(self,parent):
@@ -473,12 +536,15 @@ class chess_white(QLabel):
         self.setMouseTracking(True)    
         self.show()
     def mouseMoveEvent(self, QMouseEvent):
-        return super().mouseMoveEvent(QMouseEvent)   
+        return super().mouseMoveEvent(QMouseEvent)
+    def restart(self):
+        self.setGeometry(QRect(-100,-100,CHESS_SIZE,CHESS_SIZE))   
 
 class cursorrect(QLabel):
 
     cursor_signal = pyqtSignal()
     def __init__(self,parent):
+
         super(cursorrect,self).__init__(parent)
         cursor_image = QImage("src/cursor.png")
         self.setGeometry(QRect(BOARD_WIDTH_OFFSET,BOARD_HEIGHT_OFFSET,CURSOR_SIZE,CURSOR_SIZE))
@@ -506,8 +572,10 @@ class chess_last(QLabel):
 					Qt.SmoothTransformation)
         self.setPixmap(QPixmap.fromImage(last_image)) 
         self.setMouseTracking(True) 
-        def mouseMoveEvent(self, QMouseEvent):
-            return super().mouseMoveEvent(QMouseEvent)  
+    def mouseMoveEvent(self, QMouseEvent):
+        return super().mouseMoveEvent(QMouseEvent)
+    def restart(self):
+        self.setGeometry(QRect(-100,-100,CHESS_SIZE,CHESS_SIZE))
 
 class Mythread(QThread):
     finish_signal = pyqtSignal()
@@ -535,6 +603,7 @@ class Mythread(QThread):
             last_chess_type = 0
             last_cursor_x = list_temp[1]
             last_cursor_y = list_temp[0]
+            print("aiwhite",list_temp[1],list_temp[0])
             self.finish_signal.emit()
 
 class chessboard(QLabel):
@@ -594,6 +663,7 @@ class chessboard(QLabel):
         global win_x_f
         global win_y
         global win_y_f
+        global victor
         pixel_per_halfchess = ((BOARD_SIZE - BOARD_OFFSET) / (LISTSIZE - 1)) / 2
         if black_or_white == 1:
             self.player2_timer.stop()
@@ -610,8 +680,9 @@ class chessboard(QLabel):
                 win_y_f = win_list[4]
                 print("black win")
                 self.update()
-                self.victory.emit()
                 victor = BLACK_VIC
+                self.victory.emit()
+                
             else:
                 self.player1_timer.start()        
                 self.draw_ai_chess.emit()
@@ -630,8 +701,9 @@ class chessboard(QLabel):
                 win_y_f = win_list[4]
                 print("white win")
                 self.update()
-                self.victory.emit()
                 victor = WHITE_VIC
+                self.victory.emit()
+                
             else:
                 self.player2_timer.start() 
                 self.draw_ai_chess.emit()   
@@ -677,8 +749,9 @@ class chessboard(QLabel):
                             win_y_f = win_list[4]
                             print("black win")
                             self.update()
-                            self.victory.emit()
                             victor = BLACK_VIC
+                            self.victory.emit()
+                            
                         else:
                             self.player1_timer.start()
                             self.ai.start()                         
@@ -699,8 +772,9 @@ class chessboard(QLabel):
                             win_y_f = win_list[4]
                             print("white win")
                             self.update()
-                            self.victory.emit()
                             victor = WHITE_VIC
+                            self.victory.emit()
+                            
                         else:
                             self.player2_timer.start()
                             self.ai.start()                        
@@ -721,8 +795,9 @@ class chessboard(QLabel):
                             win_y_f = win_list[4]
                             print("black win")
                             self.update()
-                            self.victory.emit()
                             victor = BLACK_VIC
+                            self.victory.emit()
+                            
                         else:
                             self.player1_timer.start()
                             last_chess_type = 255
@@ -745,8 +820,9 @@ class chessboard(QLabel):
                             win_y_f = win_list[4]
                             print("white win")
                             self.update()
-                            self.victory.emit()
                             victor = WHITE_VIC
+                            self.victory.emit()
+                            
                         else:
                             self.player2_timer.start()
                             last_chess_type = 0
@@ -769,9 +845,19 @@ class chessboard(QLabel):
         return super().mouseMoveEvent(QMouseEvent)
     def mousePressEvent(self, QMouseEvent):
         return super().mousePressEvent(QMouseEvent)
-
+    def restart(self):
+        self.hide()
+        self.lastchess.restart()
+        for i in range(MAX_CHESS):
+            self.list_chess_b[i].restart()
+            self.list_chess_w[i].restart()
 class victory_board(QLabel):
     n = 0
+    flag = 0
+    stop = 0
+    delta = 0
+    angle = 0
+    victory_finished = pyqtSignal()
     def __init__(self,parent):
         super(victory_board,self).__init__(parent)
         self.setGeometry(QRect(0,0,WINDOW_WIDTH,WINDOW_HEIGHT))
@@ -782,8 +868,9 @@ class victory_board(QLabel):
     def paintEvent(self, QPaintEvent):
         global victor
         global win_x
-        global win_y
+        global win_y       
         if victor != 0:
+            #print(win_x,win_y,win_x_f,win_y_f)
             pix = QPixmap("src/123.jpg")
             painter = QPainter(self)
             pixel_per_halfchess = ((BOARD_SIZE - BOARD_OFFSET) / (LISTSIZE - 1)) / 2
@@ -795,27 +882,45 @@ class victory_board(QLabel):
                 y_width = (win_x + 2) * pixel_per_halfchess * 2+ pixel_per_halfchess +BOARD_HEIGHT_OFFSET
             if win_x < win_x_f and win_y < win_y_f:
                 x_width = (win_y + 2) * pixel_per_halfchess * 2 + pixel_per_halfchess + BOARD_WIDTH_OFFSET
-                y_width = (win_x + 2) * pixel_per_halfchess * 2 + pixel_per_halfchess +BOARD_HEIGHT_OFFSET        
-####
-            #print(x_width,y_width)
-            
+                y_width = (win_x + 2) * pixel_per_halfchess * 2 + pixel_per_halfchess +BOARD_HEIGHT_OFFSET 
+            if win_x > win_x_f and win_y < win_y_f:
+                x_width = (win_y + 2) * pixel_per_halfchess * 2 + pixel_per_halfchess + BOARD_WIDTH_OFFSET   
+                y_width = (win_x_f + 2) * pixel_per_halfchess * 2 + pixel_per_halfchess +BOARD_HEIGHT_OFFSET    
             x_width = x_width - WINDOW_WIDTH / 6
             y_width = y_width - WINDOW_HEIGHT / 6
             left_per_x = x_width / 20
             left_per_y = y_width / 20
             right_per_x = (WINDOW_WIDTH - (x_width + WINDOW_WIDTH / 3)) / 20
             right_per_y = (WINDOW_HEIGHT - (y_width + WINDOW_HEIGHT / 3)) / 20
-            if self.n < 20:
+            if self.n < 20 and self.flag == 0:
                 painter.drawPixmap(QRectF(0,0,WINDOW_WIDTH,WINDOW_HEIGHT),pix,QRectF(0 + self.n * left_per_x, 0 + self.n * left_per_y,WINDOW_WIDTH - self.n * right_per_x - self.n * left_per_x,WINDOW_HEIGHT - self.n * right_per_y - self.n * left_per_y))
-                self.n += 1 
+                self.n += 0.5 
             else:
-                painter.drawPixmap(QRectF(0,0,WINDOW_WIDTH,WINDOW_HEIGHT),pix,QRectF(x_width, y_width,WINDOW_WIDTH / 3, WINDOW_HEIGHT/3)) 
-                self.scaletimer.stop()
+                if self.n == 20:
+                    self.flag = 1
+                if self.flag == 1 and self.stop == 0:
+                    painter.rotate(self.angle)
+                    painter.drawPixmap(QRectF(0,0,WINDOW_WIDTH,WINDOW_HEIGHT),pix,QRectF(0 + self.n * left_per_x, 0 + self.n * left_per_y,WINDOW_WIDTH - self.n * right_per_x - self.n * left_per_x,WINDOW_HEIGHT - self.n * right_per_y - self.n * left_per_y))
+                    self.n -= self.delta
+                    self.delta += 1
+                    self.angle += 1
+                if self.n < -200:
+                    self.stop = 1
+                    self.hide()
+                    self.victory_finished.emit()
         self.update()
         return super().paintEvent(QPaintEvent)
-             
+    def restart(self):
+        self.n = 0
+        self.flag = 0
+        self.stop = 0
+        self.delta = 0
+        self.angle = 0
+        self.hide()
+              
 class gobang_gui(QMainWindow):
     pic_ready = pyqtSignal()
+    restart_ready = pyqtSignal()
     def __init__(self,parent=None):
         QMainWindow.__init__(self,parent)
         self.setWindowTitle("GoMoKu")
@@ -823,6 +928,8 @@ class gobang_gui(QMainWindow):
         self.screen = QGuiApplication.primaryScreen()
         self.table = background(self)
         self.board = chessboard(self)
+        self.door_left = left_door(self)
+        self.door_right = right_door(self)
         self.vic_scene = victory_board(self)
         self.pvp = pvp_p_button(self)
         self.pve = pvp_e_button(self)
@@ -836,6 +943,18 @@ class gobang_gui(QMainWindow):
         self.rope = dragrope(self)
         self.select1 = select_button1(self)
         self.select2 = select_button2(self)
+        self.openleft_animation = QPropertyAnimation(self.door_left,b"geometry")
+        self.openright_animation = QPropertyAnimation(self.door_right,b"geometry")
+        self.openleft_animation.setDuration(500)
+        self.openright_animation.setDuration(500)
+        self.openleft_animation.setEasingCurve(QEasingCurve.InQuad)
+        self.openright_animation.setEasingCurve(QEasingCurve.InQuad)
+        self.closeleft_animation = QPropertyAnimation(self.door_left,b"geometry")
+        self.closeright_animation = QPropertyAnimation(self.door_right,b"geometry")
+        self.closeleft_animation.setDuration(1000)
+        self.closeright_animation.setDuration(1000)
+        self.closeleft_animation.setEasingCurve(QEasingCurve.InQuad)
+        self.closeright_animation.setEasingCurve(QEasingCurve.InQuad)
         self.back_animation = QPropertyAnimation(self.rope,b"geometry")
         self.back_animation.setDuration(500)
         self.back_animation.setEasingCurve(QEasingCurve.InQuad)
@@ -860,11 +979,12 @@ class gobang_gui(QMainWindow):
         self.board.player2_timer.timeout.connect(self.addTime2)
         self.rope.back_signal.connect(self.startAnimation)
         self.rope.move_signal.connect(self.move_start)
-        self.start_animation.finished.connect(self.start_select)
+        self.start_animation.finished.connect(self.start_select)        
         self.select1.change2.connect(self.change_select2)
         self.select2.change1.connect(self.change_select1)
-        self.chooseb.go_b.connect(self.start_fade)
-        self.choosew.go_w.connect(self.start_fade)
+        self.chooseb.go_b.connect(self.door_open)
+        self.choosew.go_w.connect(self.door_open)
+        self.openleft_animation.finished.connect(self.start_fade)
         self.fadetimer.timeout.connect(self.choosew.fade)
         self.fadetimer.timeout.connect(self.chooseb.fade)
         self.fadetimer.timeout.connect(self.select1.fade)
@@ -880,6 +1000,83 @@ class gobang_gui(QMainWindow):
         self.board.victory.connect(self.victory_scene)
         self.pic_ready.connect(self.vic_scene.scaletimer.start)
         self.pic_ready.connect(self.vic_scene.show)
+        self.vic_scene.victory_finished.connect(self.door_close)
+        self.closeleft_animation.finished.connect(self.restart)
+    def restart(self):
+        global board_list
+        global win_x
+        global win_y
+        global win_x_f
+        global win_y_f
+        global your_choose
+        global start_handle
+        global count_white
+        global count_black
+        global cursor_x
+        global cursor_y
+        global black_or_white
+        global last_chess_type
+        global last_cursor_x
+        global last_cursor_y
+        global rope_under_click
+        global select1_clicked
+        global select2_clicked
+        global pvp_flag
+        global victor
+        global enable_chess
+        for i in range(15):
+            for j in range(15):
+                board_list[i][j] = 0
+        win_x = 0
+        win_y = 0
+        win_x_f = 0
+        win_y_f = 0
+        your_choose = 0 #0 for white and 1 for black
+        start_handle = 1
+        count_white = 0
+        count_black = 0
+        cursor_x = 0
+        cursor_y = 0
+        black_or_white = 1 #0 for white and 1 for black
+        last_chess_type = 0 #128 for empty 255 for black 0 for white
+        last_cursor_x = 0#remain the last chess
+        last_cursor_y = 0
+        rope_under_click = 0
+        select1_clicked = 0
+        select2_clicked = 0
+        pvp_flag = 0 #0 for pvp and 1 for pve
+        victor = 0 #1 for white and 2 for black
+        enable_chess = 0
+        self.player1_time = 0 #player1 for white
+        self.player2_time = 0 #player2 for black
+        self.board.restart()
+        self.door_left.restart()
+        self.door_right.restart()
+        self.vic_scene.restart()
+        self.pvp.restart()
+        self.pve.restart()
+        self.choosew.restart()
+        self.chooseb.restart()
+        self.select1.restart()
+        self.select2.restart()
+    def door_close(self):
+        for i in range(4):
+            self.list_numb[i].hide()
+            self.list_numw[i].hide()
+        self.closeleft_animation.setStartValue(QRect(self.door_left.pos().x(),self.door_left.pos().y(),DOOR_WIDTH,DOOR_HEIGHT))
+        self.closeright_animation.setStartValue(QRect(self.door_right.pos().x(),self.door_right.pos().y(),DOOR_WIDTH,DOOR_HEIGHT))
+        self.closeleft_animation.setEndValue(QRect(0,self.door_left.pos().y(),DOOR_WIDTH,DOOR_HEIGHT))
+        self.closeright_animation.setEndValue(QRect(512,self.door_left.pos().y(),DOOR_WIDTH,DOOR_HEIGHT))
+        self.closeleft_animation.start()
+        self.closeright_animation.start()
+        self.restart_ready.emit()
+    def door_open(self):
+        self.openleft_animation.setStartValue(QRect(self.door_left.pos().x(),self.door_left.pos().y(),DOOR_WIDTH,DOOR_HEIGHT))
+        self.openleft_animation.setEndValue(QRect(DOORLEFT_OFFSET_X,self.door_left.pos().y(),DOOR_WIDTH,DOOR_HEIGHT))
+        self.openright_animation.setStartValue(QRect(self.door_right.pos().x(),self.door_right.pos().y(),DOOR_WIDTH,DOOR_HEIGHT))
+        self.openright_animation.setEndValue(QRect(DOORRIGHT_OFFSET_X,self.door_left.pos().y(),DOOR_WIDTH,DOOR_HEIGHT))
+        self.openleft_animation.start()
+        self.openright_animation.start()
     def victory_scene(self):
         self.board.repaint()
         winid = self.winId()
