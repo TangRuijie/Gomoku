@@ -59,7 +59,7 @@ def isWin(l):
 	for z in range(21):
 		cur_type = blank_type
 		max_chain = 0
-		z - = 10
+		z -= 10
 		if (z < 0):
 			for j in range(z + 15):
 				if (l[j-z][j] == blank_type):
