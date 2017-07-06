@@ -11,73 +11,70 @@ def handle_score(board, i, j, type):
 		stone = 'w'
 
 	if five(board, i, j, stone):
-		score += 50000
-
-	if live_four(board, i, j, stone):
-		score += 8000
-
-	if four(board, i, j, stone):
-		score += 1200
-
-	if double_four(board, i, j, stone):
-		score += 8000
+		score += 10000000
 
 	if seal_four(board, i, j, stone):
-		score += 40000
+		score += 1000000
 
-	if live_three(board, i, j, stone):
-		score += 1200
+	if live_four(board, i, j, stone):
+		score += 500000
+
+	if double_four(board, i, j, stone):
+		score += 500000
+
+	if four_and_live_three(board, i, j, stone):
+		score += 100000
+
+	if seal_double_three(board, i, j, stone):
+		score += 50000
+
+	if seal_three_and_live_two(board, i, j, stone):
+		score += 30000
+
+	if seal_live_three(board, i, j, stone):
+		score += 20000
 
 	if double_live_three(board, i, j, stone):
 		score += 8000
 
-	if three(board, i, j, stone):
-		score += 800
-
-	if double_three(board, i, j, stone):
-		score += 1000
-
-	if seal_live_three(board, i, j, stone):
-		score += 8000
-
-	if seal_double_live_three(board, i, j, stone):
-		score += 10000
-
-	if seal_three(board, i, j, stone):
-		score += 1000
-
-	if seal_double_three(board, i, j, stone):
+	if live_three(board, i, j, stone):
 		score += 5000
 
-	if single_live_two(board, i, j, stone):
-		score += 800
-
-	if double_live_two(board, i, j, stone):
-		score += 800
-
-	if single_sleep_two(board, i, j, stone):
-		score += 600
-
-	if double_sleep_two(board, i, j, stone):
-		score += 1000
-
-	if single_seal_livetwo(board, i, j, stone):
-		score += 800
+	if four(board, i, j, stone):
+		score += 4900
 
 	if double_seal_livetwo(board, i, j, stone):
-		score += 800
+		score += 2000
 
-	if single_seal_sleep_two(board, i, j, stone):
-		score += 600
+	if seal_three(board, i, j, stone):
+		score += 100
+
+	if single_seal_livetwo(board, i, j, stone):
+		score += 90
+
+	if double_three(board, i, j, stone):
+		score += 80
 
 	if double_seal_sleep_two(board, i, j, stone):
-		score += 600
+		score += 70
 
-	if four_and_live_three(board, i, j, stone):
-		score += 10000
+	if three(board, i, j, stone):
+		score += 60
 
-	if seal_four_and_live_three(board, i, j, stone):
-		score += 35000
+	if single_seal_sleep_two(board, i, j, stone):
+		score += 50
+
+	if double_live_two(board, i, j, stone):
+		score += 40
+
+	if single_live_two(board, i, j, stone):
+		score += 30
+
+	if double_sleep_two(board, i, j, stone):
+		score += 20
+
+	if single_sleep_two(board, i, j, stone):
+		score += 10
 
 	return score
 
