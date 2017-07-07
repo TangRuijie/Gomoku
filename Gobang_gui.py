@@ -180,11 +180,13 @@ class pvp_p_button(QLabel):
             self.effect.setOpacity(self.opacity)
             self.setGraphicsEffect(self.effect)
         self.opacity -= 0.1
+        self.hide()
     def restart(self):
         self.opacity = 1
         self.effect.setOpacity(self.opacity)
         self.setGraphicsEffect(self.effect)
         self.setGeometry(QRect(PVP_SELECT_OFFSET_X,PVP_SELECT_OFFSET_Y,PVP_SELECT_WIDTH,PVP_SELECT_HEIGHT))
+        self.show()
 
 class pvp_e_button(QLabel):
     opacity = 1
@@ -212,11 +214,13 @@ class pvp_e_button(QLabel):
             self.effect.setOpacity(self.opacity)
             self.setGraphicsEffect(self.effect)
         self.opacity -= 0.1
+        self.hide()
     def restart(self):
         self.opacity = 1
         self.effect.setOpacity(self.opacity)
         self.setGraphicsEffect(self.effect)
         self.setGeometry(QRect(PVP_SELECT_OFFSET_X + 500,PVP_SELECT_OFFSET_Y,PVP_SELECT_WIDTH,PVP_SELECT_HEIGHT))
+        self.show()
 
 class chess_button1(QLabel):
     go_w = pyqtSignal()
@@ -694,16 +698,44 @@ class chessboard(QLabel):
         global last_black_y
         global last_white_x
         global last_white_y
-        if you_can_regret == 1:
-            count_black -= 1
-            count_white -= 1
-            board_list[last_black_y][last_black_x] = 0
-            board_list[last_white_y][last_white_x] = 0
-            self.list_chess_b[count_black].setGeometry(QRect(-100,-100,CHESS_SIZE,CHESS_SIZE))
-            self.list_chess_w[count_white].setGeometry(QRect(-100,-100,CHESS_SIZE,CHESS_SIZE))
-            self.lastchess.setGeometry(QRect(-100,-100,CHESS_SIZE,CHESS_SIZE))
-            self.repaint()
-            you_can_regret = 0
+        global black_or_white
+        global pvp_flag
+        if pvp_flag == 1:
+            if you_can_regret == 1:
+                if count_black >= 1 and count_white >= 1:
+                    count_black -= 1
+                    count_white -= 1
+                    board_list[last_black_y][last_black_x] = 0
+                    board_list[last_white_y][last_white_x] = 0
+                    self.list_chess_b[count_black].setGeometry(QRect(-100,-100,CHESS_SIZE,CHESS_SIZE))
+                    self.list_chess_w[count_white].setGeometry(QRect(-100,-100,CHESS_SIZE,CHESS_SIZE))
+                    self.lastchess.setGeometry(QRect(-100,-100,CHESS_SIZE,CHESS_SIZE))
+                    self.repaint()
+                    you_can_regret = 0
+        else:
+             if you_can_regret == 1:
+                 if black_or_white == 1:
+                     self.player2_timer.stop()
+                     count_white -= 1
+                     board_list[last_white_y][last_white_x] = 0
+                     self.list_chess_w[count_white].setGeometry(QRect(-100,-100,CHESS_SIZE,CHESS_SIZE))
+                     self.lastchess.setGeometry(QRect(-100,-100,CHESS_SIZE,CHESS_SIZE))
+                     self.repaint()
+                     you_can_regret = 0
+                     black_or_white = 0
+                     self.player1_timer.start()
+
+                 else:
+                     self.player1_timer.stop()
+                     count_black -= 1
+                     board_list[last_black_y][last_black_x] = 0
+                     self.list_chess_b[count_black].setGeometry(QRect(-100,-100,CHESS_SIZE,CHESS_SIZE))
+                     self.lastchess.setGeometry(QRect(-100,-100,CHESS_SIZE,CHESS_SIZE))
+                     self.repaint()
+                     you_can_regret = 0
+                     black_or_white = 1
+                     self.player2_timer.start()
+                     
     def drawFirstChess(self):
         global enable_chess
 
@@ -1075,22 +1107,24 @@ class gobang_gui(QMainWindow):
         self.start_animation.finished.connect(self.start_select)        
         self.select1.change2.connect(self.change_select2)
         self.select2.change1.connect(self.change_select1)
-        self.chooseb.go_b.connect(self.door_open)
-        self.choosew.go_w.connect(self.door_open)
+        self.chooseb.go_b.connect(self.start_fade)
+        self.choosew.go_w.connect(self.start_fade)
 
-        self.openleft_animation.finished.connect(self.start_fade)
+        self.openleft_animation.finished.connect(self.start_game)
         self.fadetimer.timeout.connect(self.choosew.fade)
         self.fadetimer.timeout.connect(self.chooseb.fade)
         self.fadetimer.timeout.connect(self.select1.fade)
         self.fadetimer.timeout.connect(self.select2.fade)
         self.fadetimer.timeout.connect(self.pvp.fade)
         self.fadetimer.timeout.connect(self.pve.fade)
+        self.select1.stop_timer.connect(self.door_open)
         self.appeartimer.timeout.connect(self.select1.appear)
         self.appeartimer.timeout.connect(self.select2.appear)
-        self.choosew.stop_timer.connect(self.start_game)
+        #self.choosew.stop_timer.connect(self.start_game)
         self.select1.stop_appear.connect(self.appeartimer.stop)
         self.pvp.pvp_select.connect(self.start_fade)
         self.pve.pvp_select.connect(self.start_appear)
+        
         self.pvp.pvp_select.connect(self.door_open)
         self.board.victory.connect(self.victory_scene)
         self.pic_ready.connect(self.vic_scene.scaletimer.start)
