@@ -31,24 +31,26 @@ ROPE_WIDTH = 50
 ROPE_HEIGHT = 500
 ROPE_OFFSET_X = 100
 ROPE_OFFSET_Y = -200
-SELECT_WIDTH = 322
-SELECT_HEIGHT = 70
-SELECT1_OFFSET_X = 351
-SELECT1_OFFSET_Y = 350
-SELECT2_OFFSET_X = 351
-SELECT2_OFFSET_Y = 450
-CHOOSE_WIDTH = 60
-CHOOSE_HEIGHT = 60
+SELECT_WIDTH = 161
+SELECT_HEIGHT = 35
+SELECT1_OFFSET_X = 630
+SELECT1_OFFSET_Y = 200
+SELECT2_OFFSET_X = 630
+SELECT2_OFFSET_Y = 250
+CHOOSE_WIDTH = 30
+CHOOSE_HEIGHT = 30
 MAX_CHESS = 114
-PVP_SELECT_WIDTH = 30
-PVP_SELECT_HEIGHT = 20
-PVP_SELECT_OFFSET_X = 400
+PVP_SELECT_WIDTH = 276
+PVP_SELECT_HEIGHT = 63
+PVP_SELECT_OFFSET_X = 130
 PVP_SELECT_OFFSET_Y = 100
 DOOR_WIDTH = 512
 DOOR_HEIGHT = 768
 DOORLEFT_OFFSET_X = -512+137
 DOORRIGHT_OFFSET_X = 1024 -137
-
+BUTTON_WIDTH = 223
+BUTTON_HEIGHT = 74
+BUTTON_OFFSET_X = (1024-223) // 2
 AI_BLACK = 2
 AI_WHITE = 1
 WHITE_VIC = 1
@@ -68,6 +70,11 @@ black_or_white = 1 #0 for white and 1 for black
 last_chess_type = 0 #128 for empty 255 for black 0 for white
 last_cursor_x = 0#remain the last chess
 last_cursor_y = 0
+last_black_x = 0
+last_black_y = 0
+last_white_x = 0
+last_white_y = 0
+you_can_regret = 0
 rope_under_click = 0
 select1_clicked = 0
 select2_clicked = 0
@@ -91,6 +98,37 @@ board_list = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
               [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
               [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
               ]
+
+class back_button(QLabel):
+    up = pyqtSignal()
+    down = pyqtSignal()
+    back = pyqtSignal()
+    def __init__(self,parent):
+        super(back_button,self).__init__(parent)
+        self.buttonimage = QImage("src/back.png")
+        self.buttonimage_2 = QImage("src/back_p.png")
+        self.setGeometry(QRect(BUTTON_OFFSET_X,-64,BUTTON_WIDTH,BUTTON_HEIGHT))
+        self.buttonimage = self.buttonimage.scaled(self.size(),
+                    Qt.KeepAspectRatio,
+                    Qt.SmoothTransformation)
+        self.buttonimage_2 = self.buttonimage_2.scaled(self.size(),
+                    Qt.KeepAspectRatio,
+                    Qt.SmoothTransformation)
+        self.setPixmap(QPixmap.fromImage(self.buttonimage))
+
+    def mouseReleaseEvent(self, QMouseEvent):
+        self.setPixmap(QPixmap.fromImage(self.buttonimage))
+        return super().mouseReleaseEvent(QMouseEvent)
+    def mousePressEvent(self, QMouseEvent):
+        self.setPixmap(QPixmap.fromImage(self.buttonimage_2))
+        self.back.emit()
+        return super().mousePressEvent(QMouseEvent)
+    def enterEvent(self, QEvent):   
+        self.up.emit()
+        return super().enterEvent(QEvent)
+    def leaveEvent(self, QEvent):
+        self.down.emit()
+        return super().leaveEvent(QEvent)
 
 class left_door(QLabel):
     def __init__(self,parent):
@@ -155,7 +193,7 @@ class pvp_e_button(QLabel):
     def __init__(self,parent):
         super(pvp_e_button,self).__init__(parent)
         self.button_image = QImage("src/pvp_e.png")
-        self.setGeometry(QRect(PVP_SELECT_OFFSET_X + 184,PVP_SELECT_OFFSET_Y,PVP_SELECT_WIDTH,PVP_SELECT_HEIGHT))
+        self.setGeometry(QRect(PVP_SELECT_OFFSET_X + 500,PVP_SELECT_OFFSET_Y,PVP_SELECT_WIDTH,PVP_SELECT_HEIGHT))
         self.setMouseTracking(True)
         self.effect = QGraphicsOpacityEffect()
         self.button_image = self.button_image.scaled(self.size(),
@@ -178,7 +216,7 @@ class pvp_e_button(QLabel):
         self.opacity = 1
         self.effect.setOpacity(self.opacity)
         self.setGraphicsEffect(self.effect)
-        self.setGeometry(QRect(PVP_SELECT_OFFSET_X + 184,PVP_SELECT_OFFSET_Y,PVP_SELECT_WIDTH,PVP_SELECT_HEIGHT))
+        self.setGeometry(QRect(PVP_SELECT_OFFSET_X + 500,PVP_SELECT_OFFSET_Y,PVP_SELECT_WIDTH,PVP_SELECT_HEIGHT))
 
 class chess_button1(QLabel):
     go_w = pyqtSignal()
@@ -361,7 +399,6 @@ class select_button2(QLabel):
         self.effect.setOpacity(self.opacity)
         self.setGraphicsEffect(self.effect)
         self.hide()
-
     def enterEvent(self, QEvent):
         #print("enter")
         global select2_clicked
@@ -589,21 +626,30 @@ class Mythread(QThread):
         global last_chess_type
         global last_cursor_x
         global last_cursor_y
+        global last_black_x
+        global last_black_y
+        global last_white_x
+        global last_white_y
         if black_or_white == 1:
-            list_temp = naive_mode(board_list,AI_BLACK,select2_clicked)
+            list_temp = naive_mode(board_list,AI_BLACK)
             board_list[list_temp[0]][list_temp[1]] = 2
             last_chess_type = 1
             last_cursor_x = list_temp[1]
             last_cursor_y = list_temp[0]
-            print(list_temp[0],list_temp[1])
+            last_black_x = list_temp[1]
+            last_black_y = list_temp[0]
+            
+            print(last_black_x,last_black_y)
             self.finish_signal.emit()
         else:
-            list_temp = naive_mode(board_list,AI_WHITE,select2_clicked)
+            list_temp = naive_mode(board_list,AI_WHITE)
             board_list[list_temp[0]][list_temp[1]] = 1
             last_chess_type = 0
             last_cursor_x = list_temp[1]
             last_cursor_y = list_temp[0]
-            print("aiwhite",list_temp[1],list_temp[0])
+            last_white_x = list_temp[1]
+            last_white_y = list_temp[0]
+            print(last_white_x,last_white_y)
             self.finish_signal.emit()
 
 class chessboard(QLabel):
@@ -639,8 +685,28 @@ class chessboard(QLabel):
         self.start_chess.connect(self.drawFirstChess)
         self.ai.finish_signal.connect(self.drawAiChess)
         self.draw_ai_chess.connect(self.enablePress)
+    def regret(self):
+        global you_can_regret
+        global count_black
+        global count_white
+        global board_list
+        global last_black_x
+        global last_black_y
+        global last_white_x
+        global last_white_y
+        if you_can_regret == 1:
+            count_black -= 1
+            count_white -= 1
+            board_list[last_black_y][last_black_x] = 0
+            board_list[last_white_y][last_white_x] = 0
+            self.list_chess_b[count_black].setGeometry(QRect(-100,-100,CHESS_SIZE,CHESS_SIZE))
+            self.list_chess_w[count_white].setGeometry(QRect(-100,-100,CHESS_SIZE,CHESS_SIZE))
+            self.lastchess.setGeometry(QRect(-100,-100,CHESS_SIZE,CHESS_SIZE))
+            self.repaint()
+            you_can_regret = 0
     def drawFirstChess(self):
         global enable_chess
+
         global pvp_flag
         if pvp_flag == 1:
             if your_choose == 0:
@@ -690,7 +756,7 @@ class chessboard(QLabel):
             self.player1_timer.stop()
             self.lastchess.setGeometry(QRect(last_cursor_x * pixel_per_halfchess * 2 + CHESS_OFFSET,last_cursor_y * pixel_per_halfchess * 2 + CHESS_OFFSET,CHESS_SIZE,CHESS_SIZE))
             self.lastchess.show()
-            self.list_chess_w[count_black].setGeometry(QRect(last_cursor_x * pixel_per_halfchess * 2 + CHESS_OFFSET,last_cursor_y * pixel_per_halfchess * 2 + CHESS_OFFSET,CHESS_SIZE,CHESS_SIZE))
+            self.list_chess_w[count_white].setGeometry(QRect(last_cursor_x * pixel_per_halfchess * 2 + CHESS_OFFSET,last_cursor_y * pixel_per_halfchess * 2 + CHESS_OFFSET,CHESS_SIZE,CHESS_SIZE))
             black_or_white = 1
             count_white += 1
             win_list = isWin(board_list)                    
@@ -718,6 +784,10 @@ class chessboard(QLabel):
         global last_chess_type
         global last_cursor_x
         global last_cursor_y
+        global last_black_x
+        global last_black_y
+        global last_white_x
+        global last_white_y
         global pvp_flag
         global victor
         global win_x
@@ -725,9 +795,11 @@ class chessboard(QLabel):
         global win_x_f
         global win_y_f
         global enable_chess
+        global you_can_regret
         if enable_chess == 1:
             pixel_per_halfchess = ((BOARD_SIZE - BOARD_OFFSET) / (LISTSIZE - 1)) / 2
-            if board_list[cursor_y][cursor_x] == 0:              
+            if board_list[cursor_y][cursor_x] == 0:
+                you_can_regret = 1              
                 if pvp_flag == 1:
                     enable_chess = 0                
                     if black_or_white == 1:
@@ -739,8 +811,10 @@ class chessboard(QLabel):
                         self.list_chess_b[count_black].setGeometry(QRect(cursor_x * pixel_per_halfchess * 2 + CHESS_OFFSET,cursor_y * pixel_per_halfchess * 2 + CHESS_OFFSET,CHESS_SIZE,CHESS_SIZE))               
                         count_black += 1                        
                         last_chess_type = 1
-                        last_cursor_x = cursor_x
+                        last_cursor_x = cursor_x                       
                         last_cursor_y = cursor_y
+                        last_black_x = cursor_x
+                        last_black_y = cursor_y
                         win_list = isWin(board_list)                    
                         if win_list[0] == 2:
                             win_x = win_list[1]
@@ -763,6 +837,8 @@ class chessboard(QLabel):
                         self.lastchess.show()
                         self.list_chess_w[count_white].setGeometry(QRect(cursor_x * pixel_per_halfchess * 2 + CHESS_OFFSET,cursor_y * pixel_per_halfchess * 2 + CHESS_OFFSET,CHESS_SIZE,CHESS_SIZE))
                         self.update()
+                        last_white_x = cursor_x
+                        last_white_y = cursor_y
                         count_white += 1                        
                         win_list = isWin(board_list)                    
                         if win_list[0] == 1:
@@ -796,13 +872,14 @@ class chessboard(QLabel):
                             print("black win")
                             self.update()
                             victor = BLACK_VIC
-                            self.victory.emit()
-                            
+                            self.victory.emit()                            
                         else:
                             self.player1_timer.start()
                             last_chess_type = 255
                             last_cursor_x = cursor_x
                             last_cursor_y = cursor_y
+                            last_black_x = cursor_x
+                            last_black_y = cursor_y
                             black_or_white = 0
                     else:
                         self.player1_timer.stop()
@@ -828,6 +905,8 @@ class chessboard(QLabel):
                             last_chess_type = 0
                             last_cursor_x = cursor_x
                             last_cursor_y = cursor_y
+                            last_white_x = cursor_x
+                            last_white_y = cursor_y
                             black_or_white = 1
     def mouseMoveEvent(self, QMouseEvent):
         mouse_point = QMouseEvent.pos()
@@ -857,6 +936,7 @@ class victory_board(QLabel):
     stop = 0
     delta = 0
     angle = 0
+    clicked = 0
     victory_finished = pyqtSignal()
     def __init__(self,parent):
         super(victory_board,self).__init__(parent)
@@ -894,11 +974,13 @@ class victory_board(QLabel):
             right_per_y = (WINDOW_HEIGHT - (y_width + WINDOW_HEIGHT / 3)) / 20
             if self.n < 20 and self.flag == 0:
                 painter.drawPixmap(QRectF(0,0,WINDOW_WIDTH,WINDOW_HEIGHT),pix,QRectF(0 + self.n * left_per_x, 0 + self.n * left_per_y,WINDOW_WIDTH - self.n * right_per_x - self.n * left_per_x,WINDOW_HEIGHT - self.n * right_per_y - self.n * left_per_y))
-                self.n += 0.5 
+                self.n += 0.1 
             else:
-                if self.n == 20:
+                if self.n >= 20 and self.clicked == 0:
+                    painter.drawPixmap(QRectF(0,0,WINDOW_WIDTH,WINDOW_HEIGHT),pix,QRectF(0 + self.n * left_per_x, 0 + self.n * left_per_y,WINDOW_WIDTH - self.n * right_per_x - self.n * left_per_x,WINDOW_HEIGHT - self.n * right_per_y - self.n * left_per_y))
+                if self.n >= 20 and self.clicked == 1:
                     self.flag = 1
-                if self.flag == 1 and self.stop == 0:
+                if self.flag == 1 and self.stop == 0 and self.clicked == 1:
                     painter.rotate(self.angle)
                     painter.drawPixmap(QRectF(0,0,WINDOW_WIDTH,WINDOW_HEIGHT),pix,QRectF(0 + self.n * left_per_x, 0 + self.n * left_per_y,WINDOW_WIDTH - self.n * right_per_x - self.n * left_per_x,WINDOW_HEIGHT - self.n * right_per_y - self.n * left_per_y))
                     self.n -= self.delta
@@ -910,10 +992,14 @@ class victory_board(QLabel):
                     self.victory_finished.emit()
         self.update()
         return super().paintEvent(QPaintEvent)
+    def mousePressEvent(self, QMouseEvent):
+        self.clicked = 1
+        return super().mousePressEvent(QMouseEvent)
     def restart(self):
         self.n = 0
         self.flag = 0
         self.stop = 0
+        self.clicked = 0
         self.delta = 0
         self.angle = 0
         self.hide()
@@ -928,6 +1014,7 @@ class gobang_gui(QMainWindow):
         self.screen = QGuiApplication.primaryScreen()
         self.table = background(self)
         self.board = chessboard(self)
+        self.backbutton = back_button(self)
         self.door_left = left_door(self)
         self.door_right = right_door(self)
         self.vic_scene = victory_board(self)
@@ -961,8 +1048,14 @@ class gobang_gui(QMainWindow):
         self.start_animation = QPropertyAnimation(self.start,b"geometry")
         self.start_animation.setDuration(500)
         self.start_animation.setEasingCurve(QEasingCurve.InQuad)
-        self.player1_time = 0 #player1 for white
-        self.player2_time = 0 #player2 for black
+        self.backup_animation = QPropertyAnimation(self.backbutton,b"geometry")
+        self.backup_animation.setDuration(500)
+        self.backup_animation.setEasingCurve(QEasingCurve.InQuad)
+        self.backdown_animation = QPropertyAnimation(self.backbutton,b"geometry")
+        self.backdown_animation.setDuration(500)
+        self.backdown_animation.setEasingCurve(QEasingCurve.InQuad)
+        self.player1_time = 600 #player1 for white
+        self.player2_time = 600 #player2 for black
         self.list_numb = []
         self.list_numw = []
         for i in range(4):
@@ -984,6 +1077,7 @@ class gobang_gui(QMainWindow):
         self.select2.change1.connect(self.change_select1)
         self.chooseb.go_b.connect(self.door_open)
         self.choosew.go_w.connect(self.door_open)
+
         self.openleft_animation.finished.connect(self.start_fade)
         self.fadetimer.timeout.connect(self.choosew.fade)
         self.fadetimer.timeout.connect(self.chooseb.fade)
@@ -1003,6 +1097,17 @@ class gobang_gui(QMainWindow):
         self.pic_ready.connect(self.vic_scene.show)
         self.vic_scene.victory_finished.connect(self.door_close)
         self.closeleft_animation.finished.connect(self.restart)
+        self.backbutton.up.connect(self.back_up)
+        self.backbutton.down.connect(self.back_down)
+        self.backbutton.back.connect(self.board.regret)
+    def back_down(self):
+        self.backdown_animation.setStartValue(QRect(self.backbutton.pos().x(),self.backbutton.pos().y(),BUTTON_WIDTH,BUTTON_HEIGHT))
+        self.backdown_animation.setEndValue(QRect(self.backbutton.pos().x(),-64,BUTTON_WIDTH,BUTTON_HEIGHT))
+        self.backdown_animation.start()
+    def back_up(self):
+        self.backup_animation.setStartValue(QRect(self.backbutton.pos().x(),self.backbutton.pos().y(),BUTTON_WIDTH,BUTTON_HEIGHT))
+        self.backup_animation.setEndValue(QRect(self.backbutton.pos().x(),0,BUTTON_WIDTH,BUTTON_HEIGHT))
+        self.backup_animation.start()
     def restart(self):
         global board_list
         global win_x
@@ -1048,8 +1153,8 @@ class gobang_gui(QMainWindow):
         pvp_flag = 0 #0 for pvp and 1 for pve
         victor = 0 #1 for white and 2 for black
         enable_chess = 0
-        self.player1_time = 0 #player1 for white
-        self.player2_time = 0 #player2 for black
+        self.player1_time = 600 #player1 for white
+        self.player2_time = 600 #player2 for black
         self.board.restart()
         self.door_left.restart()
         self.door_right.restart()
@@ -1101,12 +1206,12 @@ class gobang_gui(QMainWindow):
         self.board.start_chess.emit()
     def change_select1(self):
         self.select1.setPixmap(QPixmap.fromImage(self.select1.select_image_1_1))
-        self.chooseb.setGeometry(QRect(SELECT2_OFFSET_X + SELECT_WIDTH + 50,SELECT2_OFFSET_Y+5,CHOOSE_WIDTH,CHOOSE_HEIGHT))
-        self.choosew.setGeometry(QRect(SELECT2_OFFSET_X + SELECT_WIDTH + 50 + 60,SELECT2_OFFSET_Y+5,CHOOSE_WIDTH,CHOOSE_HEIGHT))
+        self.chooseb.setGeometry(QRect(SELECT2_OFFSET_X + SELECT_WIDTH + 20,SELECT2_OFFSET_Y,CHOOSE_WIDTH,CHOOSE_HEIGHT))
+        self.choosew.setGeometry(QRect(SELECT2_OFFSET_X + SELECT_WIDTH + 20 + 35,SELECT2_OFFSET_Y,CHOOSE_WIDTH,CHOOSE_HEIGHT))
     def change_select2(self):
         self.select2.setPixmap(QPixmap.fromImage(self.select2.select_image_2_1))
-        self.chooseb.setGeometry(QRect(SELECT1_OFFSET_X + SELECT_WIDTH + 50,SELECT1_OFFSET_Y+5,CHOOSE_WIDTH,CHOOSE_HEIGHT))
-        self.choosew.setGeometry(QRect(SELECT1_OFFSET_X + SELECT_WIDTH + 50 + 60,SELECT1_OFFSET_Y+5,CHOOSE_WIDTH,CHOOSE_HEIGHT))
+        self.chooseb.setGeometry(QRect(SELECT1_OFFSET_X + SELECT_WIDTH + 20,SELECT1_OFFSET_Y,CHOOSE_WIDTH,CHOOSE_HEIGHT))
+        self.choosew.setGeometry(QRect(SELECT1_OFFSET_X + SELECT_WIDTH + 20 + 35,SELECT1_OFFSET_Y,CHOOSE_WIDTH,CHOOSE_HEIGHT))
     def start_select(self):
         global start_handle
         #self.select1.setGeometry(QRect(SELECT1_OFFSET_X,SELECT1_OFFSET_Y,SELECT_WIDTH,SELECT_HEIGHT))
@@ -1124,20 +1229,26 @@ class gobang_gui(QMainWindow):
         self.back_animation.start()
         self.start_animation.start()
     def addTime1(self):
-        if self.player1_time <= 9999:
-            self.player1_time += 1
+        if self.player1_time >= 0:
+            self.player1_time -= 1
             if self.player1_time >= 0 and self.player1_time < 10:
                 self.list_numw[0].shownum(self.player1_time)
+                self.list_numw[1].hide()
+                self.list_numw[2].hide()
+                self.list_numw[3].hide()
             if self.player1_time >= 10 and self.player1_time < 100:
                 self.list_numw[0].setGeometry(QRect(NUMPAD_OFFSET,NUMPAD_OFFSET,NUM_SIZE,NUM_SIZE))
                 self.list_numw[1].shownum(self.player1_time // 10)
                 self.list_numw[0].shownum(self.player1_time % 10)
+                self.list_numw[2].hide()
+                self.list_numw[3].hide()
             if self.player1_time >= 100 and self.player1_time < 1000:
                 self.list_numw[0].setGeometry(QRect(2 * NUMPAD_OFFSET,NUMPAD_OFFSET,NUM_SIZE,NUM_SIZE))
                 self.list_numw[1].setGeometry(QRect(NUMPAD_OFFSET,NUMPAD_OFFSET,NUM_SIZE,NUM_SIZE))
                 self.list_numw[2].shownum(self.player1_time // 100)
                 self.list_numw[1].shownum((self.player1_time % 100) // 10)
                 self.list_numw[0].shownum(self.player1_time % 10)
+                self.list_numw[3].hide()
             if self.player1_time >= 1000 and self.player1_time <= 9999:
                 self.list_numw[0].setGeometry(QRect(3 * NUMPAD_OFFSET,NUMPAD_OFFSET,NUM_SIZE,NUM_SIZE))
                 self.list_numw[1].setGeometry(QRect(2 * NUMPAD_OFFSET,NUMPAD_OFFSET,NUM_SIZE,NUM_SIZE))
@@ -1148,17 +1259,23 @@ class gobang_gui(QMainWindow):
                 self.list_numw[0].shownum(self.player1_time % 10)
             #print(self.player1_time)
     def addTime2(self):
-        if self.player2_time <= 9999:
-            self.player2_time += 1
+        if self.player2_time >= 0:
+            self.player2_time -= 1
             if self.player2_time >= 0 and self.player2_time < 10:
                 self.list_numb[0].shownum(self.player2_time)
+                self.list_numb[1].hide()
+                self.list_numb[2].hide()
+                self.list_numb[3].hide()
             if self.player2_time >= 10 and self.player2_time < 100:
                 self.list_numb[1].shownum(self.player2_time // 10)
                 self.list_numb[0].shownum(self.player2_time % 10)
+                self.list_numb[2].hide()
+                self.list_numb[3].hide()
             if self.player2_time >= 100 and self.player2_time < 1000:
                 self.list_numb[2].shownum(self.player2_time // 100)
                 self.list_numb[1].shownum((self.player2_time % 100) // 10)
                 self.list_numb[0].shownum(self.player2_time % 10)
+                self.list_numb[3].hide()
             if self.player2_time >= 1000 and self.player2_time <= 9999:
                 self.list_numb[3].shownum(self.player2_time // 1000)
                 self.list_numb[2].shownum((self.player2_time % 1000) // 100)
