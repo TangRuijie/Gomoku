@@ -55,6 +55,16 @@ AI_BLACK = 2
 AI_WHITE = 1
 WHITE_VIC = 1
 BLACK_VIC = 2
+NOTICE_BOARD_WIDTH = 461
+NOTICE_BOARD_HEIGHT = 118
+NOTICE_BOARD_OFFSET_X = (750-468) // 2
+NOTICE_BOARD_OFFSET_Y = (750-118) // 2
+NBUTTON_WIDTH = 123
+NBUTTON_HEIGHT = 45
+NBUTTON_OFFSET_X = (461-3*123) // 3
+NBUTTON_OFFSET_Y = 118-55
+NBUTTON_OFFSET_X2 = (461-2*123) // 3
+NBUTTON_OFFSET_Y2 = 118-55
 
 win_x = 0
 win_y = 0
@@ -81,6 +91,9 @@ select2_clicked = 0
 pvp_flag = 0 #0 for pvp and 1 for pve
 victor = 0 #1 for white and 2 for black
 enable_chess = 0
+pvp_counting = 0
+second_choose = 0
+start_playertime = 0
 
 board_list = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
               [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -98,6 +111,146 @@ board_list = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
               [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
               [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
               ]
+
+class notice_button(QLabel):
+    button_type = 0
+    click = pyqtSignal()
+    def __init__(self,parent):
+        super(notice_button,self).__init__(parent)
+        self.buttonimage1 = QImage("src/notb.png")
+        self.buttonimage1_2 = QImage("src/notb_2.png")
+        self.buttonimage2 = QImage("src/notw.png")
+        self.buttonimage2_2 = QImage("src/notw_2.png")
+        self.buttonimage3 = QImage("src/notwb.png")
+        self.buttonimage3_2 = QImage("src/notwb_2.png")
+        #self.setGeometry(NBUTTON_OFFSET_X,NBUTTON_OFFSET_Y,NBUTTON_WIDTH,NBUTTON_HEIGHT)
+        self.buttonimage1 = self.buttonimage1.scaled(self.size(),
+                    Qt.KeepAspectRatio,
+                    Qt.SmoothTransformation)
+        self.buttonimage1_2 = self.buttonimage1_2.scaled(self.size(),
+                    Qt.KeepAspectRatio,
+                    Qt.SmoothTransformation)
+        self.buttonimage2 = self.buttonimage2.scaled(self.size(),
+                    Qt.KeepAspectRatio,
+                    Qt.SmoothTransformation)
+        self.buttonimage2_2 = self.buttonimage2_2.scaled(self.size(),
+                    Qt.KeepAspectRatio,
+                    Qt.SmoothTransformation)
+        self.buttonimage3 = self.buttonimage3.scaled(self.size(),
+                    Qt.KeepAspectRatio,
+                    Qt.SmoothTransformation)
+        self.buttonimage3_2 = self.buttonimage3_2.scaled(self.size(),
+                    Qt.KeepAspectRatio,
+                    Qt.SmoothTransformation)
+        self.hide()
+    def build(self):
+        if self.button_type == 1:
+            self.setPixmap(QPixmap.fromImage(self.buttonimage1))
+        else:
+            if self.button_type == 2:
+                self.setPixmap(QPixmap.fromImage(self.buttonimage2))
+            else:
+                if self.button_type == 3:
+                    self.setPixmap(QPixmap.fromImage(self.buttonimage3))
+    def mousePressEvent(self, QMouseEvent):
+        global second_choose
+        self.click.emit()
+        if self.button_type == 1:
+            self.setPixmap(QPixmap.fromImage(self.buttonimage1_2))
+        else:
+            if self.button_type == 2:
+                self.setPixmap(QPixmap.fromImage(self.buttonimage2_2))
+            else:
+                if self.button_type == 3:
+                    self.setPixmap(QPixmap.fromImage(self.buttonimage3_2))
+                    second_choose = 1
+        return super().mousePressEvent(QMouseEvent)
+    def mouseReleaseEvent(self, QMouseEvent):
+        if self.button_type == 1:
+            self.setPixmap(QPixmap.fromImage(self.buttonimage1))
+        else:
+            if self.button_type == 2:
+                self.setPixmap(QPixmap.fromImage(self.buttonimage2))
+            else:
+                if self.button_type == 3:
+                    self.setPixmap(QPixmap.fromImage(self.buttonimage3))
+        return super().mouseReleaseEvent(QMouseEvent)
+
+class notice_board(QLabel):
+    opacity = 0
+    stop_timer = pyqtSignal()
+    stop_appear = pyqtSignal()
+    type = 1
+    def __init__(self,parent):
+        super(notice_board,self).__init__(parent)
+        self.button1 = notice_button(self)
+        self.button2 = notice_button(self)
+        self.button3 = notice_button(self)
+        self.button1.button_type = 1
+        self.button2.button_type = 2
+        self.button3.button_type = 3
+        self.button1.build()
+        self.button2.build()
+        self.button3.build()
+        self.not1_image = QImage("src/not1.png")
+        self.not2_image = QImage("src/not2.png")
+        self.not3_image = QImage("src/not3.png")
+        self.fadetimer = QTimer()
+        self.fadetimer.setInterval(20)
+        self.appeartimer = QTimer()
+        self.appeartimer.setInterval(20)
+        self.effect = QGraphicsOpacityEffect()
+        self.effect.setOpacity(self.opacity)
+        self.setGraphicsEffect(self.effect)
+        self.hide()
+        self.setGeometry(QRect(NOTICE_BOARD_OFFSET_X,NOTICE_BOARD_OFFSET_Y,NOTICE_BOARD_WIDTH,NOTICE_BOARD_HEIGHT))
+        self.not1_image = self.not1_image.scaled(self.size(),
+                    Qt.KeepAspectRatio,
+                    Qt.SmoothTransformation)
+        self.not2_image = self.not2_image.scaled(self.size(),
+                    Qt.KeepAspectRatio,
+                    Qt.SmoothTransformation)
+        self.not3_image = self.not3_image.scaled(self.size(),
+                    Qt.KeepAspectRatio,
+                    Qt.SmoothTransformation)
+        self.fadetimer.timeout.connect(self.fade)
+        self.stop_timer.connect(self.fadetimer.stop)
+        self.appeartimer.timeout.connect(self.appear)
+        self.stop_appear.connect(self.appeartimer.stop)
+        self.button1.click.connect(self.fadetimer.start)
+        self.button2.click.connect(self.fadetimer.start)
+        self.button3.click.connect(self.fadetimer.start)
+        self.button1.click.connect(self.enable)
+        self.button2.click.connect(self.enable)
+        self.button3.click.connect(self.enable)
+    def enable(self):
+        global enable_chess
+        enable_chess = 1
+    def mousePressEvent(self, QMouseEvent):
+        global enable_chess
+        global pvp_counting
+        if self.type == 1:
+            enable_chess = 1
+            self.fadetimer.start()
+        return super().mousePressEvent(QMouseEvent)
+    def fade(self):
+        if self.opacity <= 0.0:
+            self.stop_timer.emit()
+            self.hide()
+            self.button1.hide()
+            self.button2.hide()
+            self.button3.hide()
+        else:
+            self.effect.setOpacity(self.opacity)
+            self.setGraphicsEffect(self.effect)
+        self.opacity -= 0.1       
+    def appear(self):
+        if self.opacity >= 1.0:
+            self.stop_appear.emit()
+        else:
+            self.effect.setOpacity(self.opacity)
+            self.setGraphicsEffect(self.effect)
+        self.opacity += 0.1
 
 class back_button(QLabel):
     up = pyqtSignal()
@@ -680,6 +833,7 @@ class chessboard(QLabel):
             chess_w = chess_white(self)
             self.list_chess_w.append(chess_w)
         self.cursor = cursorrect(self)
+        self.notice = notice_board(self)
         self.player1_timer = QTimer(self)
         self.player2_timer = QTimer(self)
         self.player1_timer.setInterval(1000)
@@ -745,8 +899,6 @@ class chessboard(QLabel):
                 self.ai.start()
             else:
                 enable_chess = 1
-        else:
-            enable_chess = 1
     def drawAiChess(self):       
         self.player1_timer.stop()
         global count_white
@@ -828,11 +980,15 @@ class chessboard(QLabel):
         global win_y_f
         global enable_chess
         global you_can_regret
+        global pvp_counting
+        global second_choose
+        global start_playertime
         if enable_chess == 1:
             pixel_per_halfchess = ((BOARD_SIZE - BOARD_OFFSET) / (LISTSIZE - 1)) / 2
             if board_list[cursor_y][cursor_x] == 0:
-                you_can_regret = 1              
+                              
                 if pvp_flag == 1:
+                    you_can_regret = 1
                     enable_chess = 0                
                     if black_or_white == 1:
                         board_list[cursor_y][cursor_x] = 2
@@ -887,8 +1043,40 @@ class chessboard(QLabel):
                             self.player2_timer.start()
                             self.ai.start()                        
                 else:
+                    pvp_counting += 1
+                    if pvp_counting == 3:
+                        self.notice.type = 2
+                        self.notice.setPixmap(QPixmap.fromImage(self.notice.not2_image))
+                        self.notice.show()
+                        self.notice.appeartimer.start()
+                        enable_chess = 0
+                        self.notice.button1.setGeometry(QRect(NBUTTON_OFFSET_X,NBUTTON_OFFSET_Y,NBUTTON_WIDTH,NBUTTON_HEIGHT))
+                        self.notice.button2.setGeometry(QRect(NBUTTON_OFFSET_X*2+NBUTTON_WIDTH,NBUTTON_OFFSET_Y,NBUTTON_WIDTH,NBUTTON_HEIGHT))
+                        self.notice.button3.setGeometry(QRect(NBUTTON_OFFSET_X*3+2*NBUTTON_WIDTH,NBUTTON_OFFSET_Y,NBUTTON_WIDTH,NBUTTON_HEIGHT))
+                        self.notice.button1.show()
+                        self.notice.button2.show()
+                        self.notice.button3.show()
+                    if pvp_counting >3 and second_choose == 0:
+                        you_can_regret = 1
+                        start_playertime = 1
+                    if pvp_counting > 5:
+                        you_can_regret = 1
+                        start_playertime = 1
+                    if pvp_counting == 5 and second_choose == 1:
+                        self.notice.type = 3
+                        self.notice.setPixmap(QPixmap.fromImage(self.notice.not3_image))
+                        self.notice.show()
+                        self.notice.appeartimer.start()
+                        enable_chess = 0
+                        self.notice.button1.setGeometry(QRect(NBUTTON_OFFSET_X2,NBUTTON_OFFSET_Y,NBUTTON_WIDTH,NBUTTON_HEIGHT))
+                        self.notice.button2.setGeometry(QRect(NBUTTON_OFFSET_X2*2+NBUTTON_WIDTH,NBUTTON_OFFSET_Y,NBUTTON_WIDTH,NBUTTON_HEIGHT))
+                        self.notice.button3.hide()
+                        self.notice.button1.show()
+                        self.notice.button2.show()
                     if black_or_white == 1:
-                        self.player2_timer.stop()                                  
+                        if start_playertime == 1:
+                            self.player2_timer.stop()
+                                                          
                         self.lastchess.setGeometry(QRect(cursor_x * pixel_per_halfchess * 2 + CHESS_OFFSET,cursor_y * pixel_per_halfchess * 2 + CHESS_OFFSET,CHESS_SIZE,CHESS_SIZE))
                         self.lastchess.show()
                         self.list_chess_b[count_black].setGeometry(QRect(cursor_x * pixel_per_halfchess * 2 + CHESS_OFFSET,cursor_y * pixel_per_halfchess * 2 + CHESS_OFFSET,CHESS_SIZE,CHESS_SIZE))        
@@ -906,7 +1094,8 @@ class chessboard(QLabel):
                             victor = BLACK_VIC
                             self.victory.emit()                            
                         else:
-                            self.player1_timer.start()
+                            if start_playertime == 1:
+                                self.player1_timer.start()
                             last_chess_type = 255
                             last_cursor_x = cursor_x
                             last_cursor_y = cursor_y
@@ -914,7 +1103,8 @@ class chessboard(QLabel):
                             last_black_y = cursor_y
                             black_or_white = 0
                     else:
-                        self.player1_timer.stop()
+                        if start_playertime == 1:
+                            self.player1_timer.stop()
                         self.lastchess.setGeometry(QRect(cursor_x * pixel_per_halfchess * 2 + CHESS_OFFSET,cursor_y * pixel_per_halfchess * 2 + CHESS_OFFSET,CHESS_SIZE,CHESS_SIZE))
                         self.lastchess.show()
                         self.list_chess_w[count_white].setGeometry(QRect(cursor_x * pixel_per_halfchess * 2 + CHESS_OFFSET,cursor_y * pixel_per_halfchess * 2 + CHESS_OFFSET,CHESS_SIZE,CHESS_SIZE))
@@ -933,7 +1123,8 @@ class chessboard(QLabel):
                             self.victory.emit()
                             
                         else:
-                            self.player2_timer.start()
+                            if start_playertime == 1:
+                                self.player2_timer.start()
                             last_chess_type = 0
                             last_cursor_x = cursor_x
                             last_cursor_y = cursor_y
@@ -1164,6 +1355,9 @@ class gobang_gui(QMainWindow):
         global pvp_flag
         global victor
         global enable_chess
+        global second_choose
+        global pvp_counting
+        global start_playertime
         for i in range(15):
             for j in range(15):
                 board_list[i][j] = 0
@@ -1187,6 +1381,9 @@ class gobang_gui(QMainWindow):
         pvp_flag = 0 #0 for pvp and 1 for pve
         victor = 0 #1 for white and 2 for black
         enable_chess = 0
+        pvp_counting = 0
+        second_choose = 0
+        start_playertime = 0
         self.player1_time = 600 #player1 for white
         self.player2_time = 600 #player2 for black
         self.board.restart()
@@ -1237,6 +1434,11 @@ class gobang_gui(QMainWindow):
         self.select1.hide()
         self.select2.hide()
         self.board.show()
+        if pvp_flag == 0:
+            self.board.notice.type = 1
+            self.board.notice.show()
+            self.board.notice.setPixmap(QPixmap.fromImage(self.board.notice.not1_image))
+            self.board.notice.appeartimer.start()
         self.board.start_chess.emit()
     def change_select1(self):
         self.select1.setPixmap(QPixmap.fromImage(self.select1.select_image_1_1))
